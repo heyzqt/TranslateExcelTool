@@ -8,6 +8,6 @@ import java.awt.*;
 public class ToolFont extends Font {
 
     public ToolFont() {
-        super("宋体", Font.BOLD, 24);
+        super("微软雅黑", Font.PLAIN, 18);
     }
 }
