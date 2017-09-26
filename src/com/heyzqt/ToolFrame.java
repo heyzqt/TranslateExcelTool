@@ -65,6 +65,7 @@ public class ToolFrame extends JFrame implements ActionListener, ItemListener {
      * log panel
      */
     private JScrollPane mLogScrollPane;
+    public static JTextArea mLogArea;
 
     private FileChooser mFileChooser;
 
@@ -93,9 +94,6 @@ public class ToolFrame extends JFrame implements ActionListener, ItemListener {
 
         initLogPanel();
 
-//        mMainPanel.add(mChooseExcelPanel);
-//        mMainPanel.add(mChooseCountryPanel);
-
         JPanel panel_1 = new JPanel(new BorderLayout());
         panel_1.add(mChooseExcelPanel, BorderLayout.WEST);
         panel_1.add(mChooseCountryPanel, BorderLayout.CENTER);
@@ -123,7 +121,6 @@ public class ToolFrame extends JFrame implements ActionListener, ItemListener {
         mChooseExcelBtn.addActionListener(this);
         panel_1_1.add(mChooseExcelBtn);
         panel_1_2.add(mChooseExcelLab);
-        mChooseExcelPanel.setBackground(Color.magenta);
         mChooseExcelPanel.add(panel_1_1, BorderLayout.NORTH);
         mChooseExcelPanel.add(panel_1_2, BorderLayout.CENTER);
     }
@@ -432,16 +429,6 @@ public class ToolFrame extends JFrame implements ActionListener, ItemListener {
         insertPanel.add(mInsertConfirmBtn);
         insertPal.add(insertPanel);
 
-        /**
-         * @param beginSheetIndex 开始表序号(表序号从1开始)
-         * @param endSheetIndex   结束表序号(表序号从1开始)
-         * @param readcolumn      读取的单元格列数（序号从1开始）
-         * @param readrow         读取的单元格行数（序号从1开始）
-         * @param begincolumn     开始写入的单元格列数（序号从1开始）
-         * @param beginrow        开始写入的单元格行数（序号从1开始）
-         * @param lines           写入多少行
-         */
-
         //copy cell panel
         JLabel cpCellLab1 = new JLabel("开始表序号（1、2、3...）：");
         JLabel cpCellLab2 = new JLabel("结束表序号（1、2、3...）：");
@@ -569,14 +556,107 @@ public class ToolFrame extends JFrame implements ActionListener, ItemListener {
 
     private void initTransformPanel() {
         //init transform Excel to XML file panel
-        mExcel2XMLPanel = new JPanel();
-        mExcel2XMLPanel.setBackground(Color.black);
+        mExcel2XMLPanel = new JPanel(new GridLayout(3, 5));
+        JLabel label = new JLabel("将Excel文件转换为XML文件（不支持array类型）：");
+        label.setFont(new ToolFont());
+        mExcel2XMLPanel.add(label);
+
+        ButtonGroup fileTypeGroup = new ButtonGroup();
+        JRadioButton stringsBtn = new JRadioButton("strings.xml", true);
+        JRadioButton menu_stringsBtn = new JRadioButton("menu_strings.xml", false);
+        JRadioButton nav_stringsBtn = new JRadioButton("nav_strings.xml", false);
+        JRadioButton cec_stringsBtn = new JRadioButton("cec_strings.xml", false);
+        JRadioButton mmp_stringsBtn = new JRadioButton("mmp_strings.xml", false);
+        JRadioButton thr_menu_stringsBtn = new JRadioButton("thr_menu_strings.xml", false);
+        JRadioButton timeshift_tringsBtn = new JRadioButton("timeshift_strings.xml", false);
+
+        stringsBtn.setFont(new ToolFont());
+        menu_stringsBtn.setFont(new ToolFont());
+        nav_stringsBtn.setFont(new ToolFont());
+        cec_stringsBtn.setFont(new ToolFont());
+        mmp_stringsBtn.setFont(new ToolFont());
+        thr_menu_stringsBtn.setFont(new ToolFont());
+        timeshift_tringsBtn.setFont(new ToolFont());
+
+        stringsBtn.addItemListener(new RadioButtonListener());
+        menu_stringsBtn.addItemListener(new RadioButtonListener());
+        nav_stringsBtn.addItemListener(new RadioButtonListener());
+        cec_stringsBtn.addItemListener(new RadioButtonListener());
+        mmp_stringsBtn.addItemListener(new RadioButtonListener());
+        thr_menu_stringsBtn.addItemListener(new RadioButtonListener());
+        timeshift_tringsBtn.addItemListener(new RadioButtonListener());
+
+        fileTypeGroup.add(stringsBtn);
+        fileTypeGroup.add(menu_stringsBtn);
+        fileTypeGroup.add(nav_stringsBtn);
+        fileTypeGroup.add(cec_stringsBtn);
+        fileTypeGroup.add(mmp_stringsBtn);
+        fileTypeGroup.add(thr_menu_stringsBtn);
+        fileTypeGroup.add(timeshift_tringsBtn);
+        mExcel2XMLPanel.add(stringsBtn);
+        mExcel2XMLPanel.add(menu_stringsBtn);
+        mExcel2XMLPanel.add(nav_stringsBtn);
+        mExcel2XMLPanel.add(cec_stringsBtn);
+        mExcel2XMLPanel.add(mmp_stringsBtn);
+        mExcel2XMLPanel.add(thr_menu_stringsBtn);
+        mExcel2XMLPanel.add(timeshift_tringsBtn);
+
+        JLabel transformLab1 = new JLabel("开始表序号（1、2、3...）：");
+        JLabel transformLab2 = new JLabel("结束表序号（1、2、3...）：");
+        JLabel transformLab3 = new JLabel("key值列数序号(1、2、3...)：");
+        JLabel transformLab4 = new JLabel("value值列数序号(1、2、3...)：");
+        JLabel transformLab5 = new JLabel("开始写入行序号(1、2、3...)：");
+        JLabel transformLab6 = new JLabel("结束写入行序号(1、2、3...)：");
+        transformLab1.setFont(new ToolFont());
+        transformLab2.setFont(new ToolFont());
+        transformLab3.setFont(new ToolFont());
+        transformLab4.setFont(new ToolFont());
+        transformLab5.setFont(new ToolFont());
+        transformLab6.setFont(new ToolFont());
+        JTextField transformField1 = new JTextField(15);
+        JTextField transformField2 = new JTextField(15);
+        JTextField transformField3 = new JTextField(15);
+        JTextField transformField4 = new JTextField(15);
+        JTextField transformField5 = new JTextField(15);
+        JTextField transformField6 = new JTextField(15);
+        JPanel transformPal_1 = new JPanel();
+        JPanel transformPal_2 = new JPanel();
+        JPanel transformPal_3 = new JPanel();
+        JPanel transformPal_4 = new JPanel();
+        JPanel transformPal_5 = new JPanel();
+        JPanel transformPal_6 = new JPanel();
+        transformPal_1.add(transformLab1);
+        transformPal_1.add(transformField1);
+        transformPal_2.add(transformLab2);
+        transformPal_2.add(transformField2);
+        transformPal_3.add(transformLab3);
+        transformPal_3.add(transformField3);
+        transformPal_4.add(transformLab4);
+        transformPal_4.add(transformField4);
+        transformPal_5.add(transformLab5);
+        transformPal_5.add(transformField5);
+        transformPal_6.add(transformLab6);
+        transformPal_6.add(transformField6);
+        mExcel2XMLPanel.add(transformPal_1);
+        mExcel2XMLPanel.add(transformPal_2);
+        mExcel2XMLPanel.add(transformPal_3);
+        mExcel2XMLPanel.add(transformPal_4);
+        mExcel2XMLPanel.add(transformPal_5);
+        mExcel2XMLPanel.add(transformPal_6);
+
+        JButton transConfirmBtn = new JButton("开始转换");
+        transConfirmBtn.setFont(new ToolFont());
+        JPanel confirmPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        confirmPanel.add(transConfirmBtn);
+        mExcel2XMLPanel.add(confirmPanel);
     }
 
     private void initLogPanel() {
         //init log panel
-        mLogScrollPane = new JScrollPane();
-        mLogScrollPane.setBackground(Color.orange);
+        mLogArea = new JTextArea();
+        mLogArea.setFont(new ToolFont());
+        mLogArea.append("this is a log area");
+        mLogScrollPane = new JScrollPane(mLogArea);
     }
 
     @Override
@@ -609,6 +689,17 @@ public class ToolFrame extends JFrame implements ActionListener, ItemListener {
             System.out.println(jcb.getText() + " check");
         } else {
             System.out.println(jcb.getText() + "check not");
+        }
+    }
+
+    class RadioButtonListener implements ItemListener {
+
+        @Override
+        public void itemStateChanged(ItemEvent e) {
+            JRadioButton jrb = (JRadioButton) e.getSource();
+            if (jrb.isSelected()) {
+                mLogArea.append("\n" + jrb.getText() + " is choosed.");
+            }
         }
     }
 }
