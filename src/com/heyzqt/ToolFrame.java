@@ -57,6 +57,10 @@ public class ToolFrame extends JFrame implements ActionListener, ItemListener {
     private JButton mInsertConfirmBtn;
     private JButton mCpCellConfirmBtn;
     private JButton mCpColConfirmBtn;
+    private JTextField removeField1;
+    private JTextField removeField2;
+    private JTextField removeField3;
+    private JTextField removeField4;
 
 
     private JPanel mExcel2XMLPanel;
@@ -366,10 +370,10 @@ public class ToolFrame extends JFrame implements ActionListener, ItemListener {
         removeLab2.setFont(new ToolFont());
         removeLab3.setFont(new ToolFont());
         removeLab4.setFont(new ToolFont());
-        JTextField removeField1 = new JTextField(15);
-        JTextField removeField2 = new JTextField(15);
-        JTextField removeField3 = new JTextField(15);
-        JTextField removeField4 = new JTextField(15);
+        removeField1 = new JTextField(15);
+        removeField2 = new JTextField(15);
+        removeField3 = new JTextField(15);
+        removeField4 = new JTextField(15);
         JPanel removePal_1 = new JPanel();
         JPanel removePal_2 = new JPanel();
         JPanel removePal_3 = new JPanel();
@@ -388,6 +392,7 @@ public class ToolFrame extends JFrame implements ActionListener, ItemListener {
         removePal.add(removePal_4);
 
         mRemoveConfirmBtn = new JButton("删除确认执行");
+        mRemoveConfirmBtn.addActionListener(this);
         mRemoveConfirmBtn.setFont(new ToolFont());
         JPanel confirmPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         confirmPanel.add(mRemoveConfirmBtn);
@@ -663,8 +668,10 @@ public class ToolFrame extends JFrame implements ActionListener, ItemListener {
     public void actionPerformed(ActionEvent e) {
         String btn = e.getActionCommand();
         if (btn.equals("选择Excel文件")) {
-            System.out.println("choose Excel");
+            System.out.println("choose Excel file");
             mFileChooser = new FileChooser();
+            FILEPATH = mFileChooser.getFilepath();
+            showLog(FILEPATH);
         } else if (btn.equals("删除行数")) {
             mOperationsCard.show(mIndexCardPanel, "card1");
             mInfoLab.setText("删除行数说明：删除连续整行。比如：填入参数 1  10  2  5。意思是将表1到表10的第2行到第5行都删除");
@@ -679,6 +686,28 @@ public class ToolFrame extends JFrame implements ActionListener, ItemListener {
             mInfoLab.setText("复制列说明：将表readSheetIndex的readColume列数据" +
                     "，复制到beginSheetIndex表到endSheetIndex的writeColume" +
                     "列中。\n比如：填入参数 1  2  10 3 3。意思是读取表1第3列的数据然后将第3列数据复制到表2到表10的第3列中");
+        } else if ("删除确认执行".equals(btn)) {
+            int beginSheetIndex = 0;
+            int endSheetIndex = 0;
+            int beginRow = 0;
+            int endRow = 0;
+
+            try {
+                beginSheetIndex = Integer.parseInt(removeField1.getText().trim());
+                endSheetIndex = Integer.parseInt(removeField2.getText().trim());
+                beginRow = Integer.parseInt(removeField3.getText().trim());
+                endRow = Integer.parseInt(removeField4.getText().trim());
+            } catch (NumberFormatException e1) {
+                showLog("警告！！！参数填写有误，请检查后重新输入。");
+                return;
+            }
+
+            if (FILEPATH.equals("")) {
+                showLog("警告！！！还未选择文件。");
+                return;
+            } else {
+                Main.removeRow(FILEPATH, beginSheetIndex, endSheetIndex, beginRow, endRow);
+            }
         }
     }
 
@@ -701,5 +730,9 @@ public class ToolFrame extends JFrame implements ActionListener, ItemListener {
                 mLogArea.append("\n" + jrb.getText() + " is choosed.");
             }
         }
+    }
+
+    public static void showLog(String msg) {
+        mLogArea.append("\n" + msg);
     }
 }

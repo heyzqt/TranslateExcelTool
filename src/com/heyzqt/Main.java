@@ -21,7 +21,7 @@ import java.util.Iterator;
 
 public class Main {
 
-    private final static String FILENAME = "E:\\menu_arrays_keys.xls";
+    private final static String FILENAME = "E:\\translate.xls";
 
     private final static String XMLPATH = "origin_keys/";
 
@@ -41,13 +41,11 @@ public class Main {
     public static void main(String[] args) {
         // write your code here
 
-        //initFrame();
-
         new ToolFrame();
 
         //createFileNames(filenames, "mmp", "menu");
 
-        //removeRow(FILENAME, 1, 35, 3, 3);
+        //removeRow(FILENAME, 1, 35, 4, 90);
         //insertRow(1, 35, 2, 1);
         //addSingleCell(1, 35, 2, 4, 2, 5, 1);
         //copyRowA2RowB(FILENAME, 1, 2, 35, 3, 3);
@@ -496,7 +494,7 @@ public class Main {
      * @param beginRow        从哪行开始删除(行序号从1开始),beginRow会被删除
      * @param endRow          从哪行结束(行序号从1开始),endRow会被删除
      */
-    private static void removeRow(String filepath, int beginSheetIndex, int endSheetIndex, int beginRow, int endRow) {
+    public static void removeRow(String filepath, int beginSheetIndex, int endSheetIndex, int beginRow, int endRow) {
         beginSheetIndex -= 1;
         endSheetIndex -= 1;
         beginRow -= 1;
@@ -505,23 +503,32 @@ public class Main {
         File file = new File(filepath);
         try {
             System.out.println("remove begin");
+            ToolFrame.showLog("remove begin");
             InputStream in = new FileInputStream(file);
             WorkbookSettings settings = new WorkbookSettings();
             //保证读取（read）excel的编码格式和写入（write）的编码格式统一，避免乱码
             settings.setEncoding("ISO-8859-1");
             //创建工作簿
             Workbook workbook = Workbook.getWorkbook(in, settings);
-            //创建可写入的工作簿,根据book创建一个操作对象
-            WritableWorkbook writableWorkbook = Workbook.createWorkbook(file, workbook, settings);
 
             if (beginSheetIndex < 0) {
                 System.out.println("error beginSheetIndex参数有误");
+                ToolFrame.showLog("error beginSheetIndex参数有误，请重新输入！");
                 return;
             }
-            if (endSheetIndex >= writableWorkbook.getNumberOfSheets()) {
+            if (endSheetIndex >= workbook.getNumberOfSheets()) {
                 System.out.println("error endSheetIndex参数有误");
+                ToolFrame.showLog("error endSheetIndex参数有误，请重新输入！");
                 return;
             }
+            if (beginSheetIndex > endSheetIndex) {
+                System.out.println("error sheetIndex参数有误");
+                ToolFrame.showLog("error sheetIndex参数有误，请重新输入！");
+                return;
+            }
+
+            //创建可写入的工作簿,根据book创建一个操作对象
+            WritableWorkbook writableWorkbook = Workbook.createWorkbook(file, workbook, settings);
 
             for (int i = beginSheetIndex; i <= endSheetIndex; i++) {
                 WritableSheet writableSheet = writableWorkbook.getSheet(i);
@@ -533,6 +540,7 @@ public class Main {
             writableWorkbook.write();
             writableWorkbook.close();
             System.out.println("remove end");
+            ToolFrame.showLog("remove end");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
