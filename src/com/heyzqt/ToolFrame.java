@@ -1,5 +1,6 @@
 package com.heyzqt;
 
+import com.widget.DefaultFont;
 import com.widget.FileChooser;
 import com.widget.ToolFont;
 
@@ -65,6 +66,13 @@ public class ToolFrame extends JFrame implements ActionListener, ItemListener {
     private JTextField insertField2;
     private JTextField insertField3;
     private JTextField insertField4;
+    private JTextField cpCellField1;
+    private JTextField cpCellField2;
+    private JTextField cpCellField3;
+    private JTextField cpCellField4;
+    private JTextField cpCellField5;
+    private JTextField cpCellField6;
+    private JTextField cpCellField7;
     private JTextField cpColField1;
     private JTextField cpColField2;
     private JTextField cpColField3;
@@ -443,10 +451,10 @@ public class ToolFrame extends JFrame implements ActionListener, ItemListener {
         //copy cell panel
         JLabel cpCellLab1 = new JLabel("开始表序号（1、2、3...）：");
         JLabel cpCellLab2 = new JLabel("结束表序号（1、2、3...）：");
-        JLabel cpCellLab3 = new JLabel("读取单元格列数(1、2、3...)：");
-        JLabel cpCellLab4 = new JLabel("读取单元格行数(1、2、3...)：");
-        JLabel cpCellLab5 = new JLabel("写入单元格列数(1、2、3...)：");
-        JLabel cpCellLab6 = new JLabel("写入单元格行数(1、2、3...)：");
+        JLabel cpCellLab3 = new JLabel("读取单元格列序号(1、2、3...)：");
+        JLabel cpCellLab4 = new JLabel("读取单元格行序号(1、2、3...)：");
+        JLabel cpCellLab5 = new JLabel("写入单元格列序号(1、2、3...)：");
+        JLabel cpCellLab6 = new JLabel("写入单元格行序号(1、2、3...)：");
         JLabel cpCellLab7 = new JLabel("写入多少行（1、2、3...）：");
         cpCellLab1.setFont(new ToolFont());
         cpCellLab2.setFont(new ToolFont());
@@ -455,13 +463,13 @@ public class ToolFrame extends JFrame implements ActionListener, ItemListener {
         cpCellLab5.setFont(new ToolFont());
         cpCellLab6.setFont(new ToolFont());
         cpCellLab7.setFont(new ToolFont());
-        JTextField cpCellField1 = new JTextField(15);
-        JTextField cpCellField2 = new JTextField(15);
-        JTextField cpCellField3 = new JTextField(15);
-        JTextField cpCellField4 = new JTextField(15);
-        JTextField cpCellField5 = new JTextField(15);
-        JTextField cpCellField6 = new JTextField(15);
-        JTextField cpCellField7 = new JTextField(15);
+        cpCellField1 = new JTextField(15);
+        cpCellField2 = new JTextField(15);
+        cpCellField3 = new JTextField(15);
+        cpCellField4 = new JTextField(15);
+        cpCellField5 = new JTextField(15);
+        cpCellField6 = new JTextField(15);
+        cpCellField7 = new JTextField(15);
         JPanel cpCellPal_1 = new JPanel();
         JPanel cpCellPal_2 = new JPanel();
         JPanel cpCellPal_3 = new JPanel();
@@ -491,8 +499,9 @@ public class ToolFrame extends JFrame implements ActionListener, ItemListener {
         cpCellPal.add(cpCellPal_6);
         cpCellPal.add(cpCellPal_7);
 
-        mCpCellConfirmBtn = new JButton("复制单元格确认执行");
+        mCpCellConfirmBtn = new JButton("确认复制单元格");
         mCpCellConfirmBtn.setFont(new ToolFont());
+        mCpCellConfirmBtn.addActionListener(this);
         JPanel cpCellPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         cpCellPanel.add(mCpCellConfirmBtn);
         cpCellPal.add(cpCellPanel);
@@ -666,7 +675,7 @@ public class ToolFrame extends JFrame implements ActionListener, ItemListener {
     private void initLogPanel() {
         //init log panel
         mLogArea = new JTextArea();
-        mLogArea.setFont(new ToolFont());
+        mLogArea.setFont(new DefaultFont());
         mLogArea.append("this is a log area");
         mLogScrollPane = new JScrollPane(mLogArea);
     }
@@ -735,6 +744,34 @@ public class ToolFrame extends JFrame implements ActionListener, ItemListener {
                 return;
             }
             Main.insertRow(FILEPATH, beginSheetIndex, endSheetIndex, beginRow, lines);
+        } else if ("确认复制单元格".equals(btn)) {
+            int beginSheetIndex = 0;
+            int endSheetIndex = 0;
+            int readCol = 0;
+            int readRow = 0;
+            int writeCol = 0;
+            int writeRow = 0;
+            int lines = 0;
+
+            try {
+                beginSheetIndex = Integer.parseInt(cpCellField1.getText().trim());
+                endSheetIndex = Integer.parseInt(cpCellField2.getText().trim());
+                readCol = Integer.parseInt(cpCellField3.getText().trim());
+                readRow = Integer.parseInt(cpCellField4.getText().trim());
+                writeCol = Integer.parseInt(cpCellField5.getText().trim());
+                writeRow = Integer.parseInt(cpCellField6.getText().trim());
+                lines = Integer.parseInt(cpCellField7.getText().trim());
+            } catch (NumberFormatException e1) {
+                showLog("警告！！！参数填写有误，请检查后重新输入。");
+                return;
+            }
+
+            if (FILEPATH.equals("")) {
+                showLog("警告！！！还未选择文件。");
+                return;
+            }
+            Main.addSingleCell(FILEPATH, beginSheetIndex, endSheetIndex,
+                    readCol, readRow, writeCol, writeRow, lines);
         } else if ("确认复制列".equals(btn)) {
             int readSheetIndex = 0;
             int beginSheetIndex = 0;
@@ -747,7 +784,7 @@ public class ToolFrame extends JFrame implements ActionListener, ItemListener {
                 beginSheetIndex = Integer.parseInt(cpColField2.getText().trim());
                 endSheetIndex = Integer.parseInt(cpColField3.getText().trim());
                 readCol = Integer.parseInt(cpColField4.getText().trim());
-                writeCol = Integer.parseInt(cpColField4.getText().trim());
+                writeCol = Integer.parseInt(cpColField5.getText().trim());
             } catch (NumberFormatException e1) {
                 showLog("警告！！！参数填写有误，请检查后重新输入。");
                 return;

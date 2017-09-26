@@ -48,7 +48,8 @@ public class Main {
 
         //removeRow(FILENAME, 1, 35, 4, 90);
         //insertRow(1, 35, 2, 1);
-        //addSingleCell(1, 35, 2, 4, 2, 5, 1);
+//        addSingleCell(FILENAME, 1, 35,
+//                2, 5, 2, 8, 3);
         //copyRowA2RowB(FILENAME, 1, 2, 35, 3, 3);
 //        transformEXCEL2XML(FILENAME, XMLPATH, 1,
 //                35, 3, 2, 2, 3);
@@ -168,6 +169,7 @@ public class Main {
             return true;
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+            ToolFrame.showLog("error！！！文件正在被占用，请先关闭文件。");
         } catch (IOException e) {
             e.printStackTrace();
         } catch (BiffException e) {
@@ -269,6 +271,7 @@ public class Main {
             return true;
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+            ToolFrame.showLog("error！！！文件正在被占用，请先关闭文件。");
         } catch (IOException e) {
             e.printStackTrace();
         } catch (BiffException e) {
@@ -391,23 +394,41 @@ public class Main {
      * @param beginrow        开始写入的单元格行数（序号从1开始）
      * @param lines           写入多少行
      */
-    private static void addSingleCell(int beginSheetIndex, int endSheetIndex, int readcolumn,
-                                      int readrow, int begincolumn, int beginrow, int lines) {
+    public static void addSingleCell(String filepath, int beginSheetIndex, int endSheetIndex, int readcolumn,
+                                     int readrow, int begincolumn, int beginrow, int lines) {
         beginSheetIndex -= 1;
         endSheetIndex -= 1;
         readcolumn -= 1;
         readrow -= 1;
         begincolumn -= 1;
         beginrow -= 1;
-        File file = new File(FILENAME);
+        File file = new File(filepath);
         try {
-            System.out.println("addcell begin");
+            System.out.println("copy cell begin");
+            ToolFrame.showLog("copy cell begin");
             InputStream in = new FileInputStream(file);
             WorkbookSettings settings = new WorkbookSettings();
             //保证读取（read）excel的编码格式和写入（write）的编码格式统一，避免乱码
             settings.setEncoding("ISO-8859-1");
             //创建工作簿
             Workbook workbook = Workbook.getWorkbook(in, settings);
+
+            if (beginSheetIndex < 0) {
+                System.out.println("error beginSheetIndex参数有误");
+                ToolFrame.showLog("error beginSheetIndex参数有误，请重新输入！");
+                return;
+            }
+            if (endSheetIndex >= workbook.getNumberOfSheets()) {
+                System.out.println("error endSheetIndex参数有误");
+                ToolFrame.showLog("error endSheetIndex参数有误，请重新输入！");
+                return;
+            }
+            if (beginSheetIndex > endSheetIndex) {
+                System.out.println("error sheetIndex参数有误");
+                ToolFrame.showLog("error sheetIndex参数有误，请重新输入！");
+                return;
+            }
+
             //创建可写入的工作簿,根据book创建一个操作对象
             WritableWorkbook writableWorkbook = Workbook.createWorkbook(file, workbook, settings);
 
@@ -415,19 +436,24 @@ public class Main {
                 WritableSheet sheet = writableWorkbook.getSheet(i);
                 String temp = sheet.getCell(readcolumn, readrow).getContents();
                 System.out.println("getCell = " + temp);
+                ToolFrame.showLog("getCell = " + temp);
                 for (int j = 0; j < lines; j++) {
-                    Label label = new Label(begincolumn, beginrow, temp);
+                    Label label = new Label(begincolumn, beginrow + j, temp);
                     sheet.addCell(label);
                     System.out.println("setCell = " + label.getContents());
-                    System.out.println();
+                    ToolFrame.showLog("i = " + i + "setCell = " + label.getContents());
                 }
+                System.out.println();
+                ToolFrame.showLog("");
             }
 
             writableWorkbook.write();
             writableWorkbook.close();
-            System.out.println("addcell end");
+            System.out.println("copy cell end");
+            ToolFrame.showLog("copy cell end");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+            ToolFrame.showLog("error！！！文件正在被占用，请先关闭文件。");
         } catch (IOException e) {
             e.printStackTrace();
         } catch (RowsExceededException e) {
@@ -499,6 +525,7 @@ public class Main {
             ToolFrame.showLog("insert end");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+            ToolFrame.showLog("error！！！文件正在被占用，请先关闭文件。");
         } catch (IOException e) {
             e.printStackTrace();
         } catch (RowsExceededException e) {
@@ -568,6 +595,7 @@ public class Main {
             ToolFrame.showLog("remove end");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+            ToolFrame.showLog("error！！！文件正在被占用，请先关闭文件。");
         } catch (IOException e) {
             e.printStackTrace();
         } catch (RowsExceededException e) {
@@ -648,6 +676,7 @@ public class Main {
             ToolFrame.showLog("copy end");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+            ToolFrame.showLog("error！！！文件正在被占用，请先关闭文件。");
         } catch (IOException e) {
             e.printStackTrace();
         } catch (RowsExceededException e) {
