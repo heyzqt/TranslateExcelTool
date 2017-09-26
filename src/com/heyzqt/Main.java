@@ -14,17 +14,15 @@ import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
 
-import javax.swing.*;
-import javax.tools.Tool;
-import java.awt.*;
 import java.io.*;
+import java.util.Arrays;
 import java.util.Iterator;
 
 public class Main {
 
-    private final static String FILENAME = "E:\\translate.xls";
+    public final static String FILENAME = "E:\\translate.xls";
 
-    private final static String XMLPATH = "origin_keys/";
+    public final static String XMLPATH = "origin_keys/";
 
     private final static String STANDARDNAME = "menu_arrays_";
 
@@ -44,20 +42,68 @@ public class Main {
 
         new ToolFrame();
 
-        //createFileNames(filenames, "mmp", "menu");
-
         //removeRow(FILENAME, 1, 35, 4, 90);
         //insertRow(1, 35, 2, 1);
 //        addSingleCell(FILENAME, 1, 35,
 //                2, 5, 2, 8, 3);
         //copyRowA2RowB(FILENAME, 1, 2, 35, 3, 3);
-//        transformEXCEL2XML(FILENAME, XMLPATH, 1,
+//        transformEXCEL2XML(FILENAME, XMLPATH, filenames, 1,
 //                35, 3, 2, 2, 3);
 //        transformEXCEL2XMLArray(FILENAME, XMLPATH, 1, 35
 //                , 3, 2, 2, 2);
     }
 
-    private static String createFileNames(String[] filenames, String regex, String replacement) {
+    public static String[] createFileNames(String filetype, String[] countries, int length) {
+        String[] result = new String[length];
+        String filehead = "";
+        switch (filetype) {
+            case Constant.FILE_STRINGS:
+                filehead = "strings_";
+                for (int i = 0; i < length; i++) {
+                    result[i] = filehead + countries[i] + ".xml";
+                }
+                break;
+            case Constant.FILE_MENU_STRINGS:
+                filehead = "menu_strings_";
+                for (int i = 0; i < length; i++) {
+                    result[i] = filehead + countries[i] + ".xml";
+                }
+                break;
+            case Constant.FILE_NAV_STRINGS:
+                filehead = "nav_strings_";
+                for (int i = 0; i < length; i++) {
+                    result[i] = filehead + countries[i] + ".xml";
+                }
+                break;
+            case Constant.FILE_TIMESHIFT_STRINGS:
+                filehead = "timeshift_strings_";
+                for (int i = 0; i < length; i++) {
+                    result[i] = filehead + countries[i] + ".xml";
+                }
+                break;
+            case Constant.FILE_MMP_STRINGS:
+                filehead = "timeshift_strings_";
+                for (int i = 0; i < length; i++) {
+                    result[i] = filehead + countries[i] + ".xml";
+                }
+                break;
+            case Constant.FILE_CEC_STRINGS:
+                filehead = "cec_strings_";
+                for (int i = 0; i < length; i++) {
+                    result[i] = filehead + countries[i] + ".xml";
+                }
+                break;
+            case Constant.FILE_THR_MENU_STRINGS:
+                filehead = "thr_menu_strings_";
+                for (int i = 0; i < length; i++) {
+                    result[i] = filehead + countries[i] + ".xml";
+                }
+                break;
+        }
+        return result;
+    }
+
+    public static String createFileNames(String[] filenames, String regex, String replacement) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < filenames.length; i++) {
             sb.append("\"");
@@ -82,7 +128,7 @@ public class Main {
      * @param endRowIndex      excel结束写入的行序号(行序号从1开始),bendRowIndex会被写入
      * @return
      */
-    private static boolean transformEXCEL2XMLArray(String excelPath, String xmlPath, int beginSheetIndex, int
+    public static boolean transformEXCEL2XMLArray(String excelPath, String xmlPath, int beginSheetIndex, int
             endSheetIndex, int keyColumnIndex, int valueColumnIndex, int beginRowIndex, int endRowIndex) {
         beginSheetIndex -= 1;
         endSheetIndex -= 1;
@@ -191,8 +237,9 @@ public class Main {
      * @param endRowIndex      excel结束写入的行序号(行序号从1开始),bendRowIndex会被写入
      * @return
      */
-    private static boolean transformEXCEL2XML(String excelPath, String xmlPath, int beginSheetIndex, int
-            endSheetIndex, int keyColumnIndex, int valueColumnIndex, int beginRowIndex, int endRowIndex) {
+    public static boolean transformEXCEL2XML(String excelPath, String xmlPath, String[] filenames, int
+            beginSheetIndex, int endSheetIndex, int keyColumnIndex, int valueColumnIndex,
+                                             int beginRowIndex, int endRowIndex) {
         beginSheetIndex -= 1;
         endSheetIndex -= 1;
         beginRowIndex -= 1;
@@ -210,6 +257,22 @@ public class Main {
             //保证读取（read）excel的编码格式和写入（write）的编码格式统一，避免乱码
             settings.setEncoding("ISO-8859-1");
             Workbook workbook = Workbook.getWorkbook(in, settings);
+
+            if (beginSheetIndex < 0) {
+                System.out.println("error beginSheetIndex参数有误");
+                ToolFrame.showLog("error beginSheetIndex参数有误，请重新输入！");
+                return false;
+            }
+            if (endSheetIndex >= workbook.getNumberOfSheets()) {
+                System.out.println("error endSheetIndex参数有误");
+                ToolFrame.showLog("error endSheetIndex参数有误，请重新输入！");
+                return false;
+            }
+            if (beginSheetIndex > endSheetIndex) {
+                System.out.println("error sheetIndex参数有误");
+                ToolFrame.showLog("error sheetIndex参数有误，请重新输入！");
+                return false;
+            }
 
             Sheet[] sheets = workbook.getSheets();
             int x = 0;
