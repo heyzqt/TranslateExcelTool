@@ -37,18 +37,20 @@ public class Main {
             "menu_arrays_th.xml", "menu_arrays_tr.xml", "menu_arrays_uk_rUA.xml", "menu_arrays_vi_rVN.xml"};
 
 
+    private static boolean isFileExisted = false;
+
     public static void main(String[] args) {
         // write your code here
 
-        new ToolFrame();
+        //new ToolFrame();
 
         //removeRow(FILENAME, 1, 35, 4, 90);
         //insertRow(1, 35, 2, 1);
 //        addSingleCell(FILENAME, 1, 35,
 //                2, 5, 2, 8, 3);
         //copyRowA2RowB(FILENAME, 1, 2, 35, 3, 3);
-//        transformEXCEL2XML(FILENAME, XMLPATH, filenames, 1,
-//                35, 3, 2, 2, 3);
+        transformEXCEL2XML(FILENAME, XMLPATH, filenames, 1,
+                35, 3, 2, 2, 4);
 //        transformEXCEL2XMLArray(FILENAME, XMLPATH, 1, 35
 //                , 3, 2, 2, 2);
     }
@@ -287,30 +289,28 @@ public class Main {
             System.out.println();
 
             //find values
-            int row = 0;
-            int col = 0;
             int index = 0;
-            int m = 0;
-            int n = 0;
             for (int i = beginSheetIndex; i <= endSheetIndex; i++) {
                 System.out.println("i = " + i + " sheet name = " + sheets[i].getName());
+                int row_index = 0;
                 for (int j = beginRowIndex; j <= endRowIndex; j++) {
 //                    System.out.println("row " + (j + 1) + " : " + sheets[i].getCell(keyColumnIndex, j)
 //                            .getContents() +
 //                            "," + sheets[i].getCell(valueColumnIndex, j).getContents());
 
+                    keys_values[row_index++][index] = sheets[i].getCell(valueColumnIndex, j).getContents();
 
-                    //这里根据需要添加的行数添加,这里我们添加2行
-                    if (j == beginRowIndex) {
-                        keys_values[0][index] = sheets[i].getCell(valueColumnIndex, j).getContents();
-                    } else if (j == beginRowIndex + 1) {
-                        keys_values[1][index] = sheets[i].getCell(valueColumnIndex, j).getContents();
-                    }
+//                    //这里根据需要添加的行数添加,这里我们添加2行
+//                    if (j == beginRowIndex) {
+//                        keys_values[0][index] = sheets[i].getCell(valueColumnIndex, j).getContents();
+//                    } else if (j == beginRowIndex + 1) {
+//                        keys_values[1][index] = sheets[i].getCell(valueColumnIndex, j).getContents();
+//                    }
                 }
                 index++;
-                System.out.println();
             }
 
+            System.out.println();
             System.out.println("transform end");
 
             System.out.println("二维数组：");
@@ -324,12 +324,20 @@ public class Main {
 
             //change excel to xml
             int length = endSheetIndex - beginSheetIndex + 1;
+            int lines = endRowIndex - beginRowIndex + 1;
+            System.out.println("要修改的行数 lines = " + lines);
             for (int i = 0; i < length; i++) {
-                //这里根据需要添加的行数添加,这里我们添加2行
-                String[] values = new String[2];
-                values[0] = keys_values[0][i];
-                values[1] = keys_values[1][i];
-                write2XML(xmlPath, filenames[i], beginRowIndex, endRowIndex, keys, values);
+                String[] values = new String[lines];
+                for (int j = 0; j < lines; j++) {
+                    values[j] = keys_values[j][i];
+                }
+//                //这里根据需要添加的行数添加,这里我们添加2行
+//                String[] values = new String[2];
+//                values[0] = keys_values[0][i];
+//                values[1] = keys_values[1][i];
+                if (!isFileExisted) {
+                    write2XML(xmlPath, filenames[i], beginRowIndex, endRowIndex, keys, values);
+                }
             }
             return true;
         } catch (FileNotFoundException e) {
@@ -360,6 +368,10 @@ public class Main {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        } else {
+            System.out.println("error!!! please remove all the xml files!");
+            isFileExisted = true;
+            return;
         }
 
         //添加结点
@@ -386,6 +398,10 @@ public class Main {
 
         } catch (DocumentException e) {
             e.printStackTrace();
+            System.out.println("error!!! please remove all the xml files!");
+        } catch (ArrayIndexOutOfBoundsException e1) {
+            e1.printStackTrace();
+            System.out.println("error!!! please remove all the xml files!");
         }
 
         try {
