@@ -61,6 +61,10 @@ public class ToolFrame extends JFrame implements ActionListener, ItemListener {
     private JTextField removeField2;
     private JTextField removeField3;
     private JTextField removeField4;
+    private JTextField insertField1;
+    private JTextField insertField2;
+    private JTextField insertField3;
+    private JTextField insertField4;
 
 
     private JPanel mExcel2XMLPanel;
@@ -74,10 +78,6 @@ public class ToolFrame extends JFrame implements ActionListener, ItemListener {
     private FileChooser mFileChooser;
 
     private String FILEPATH = "";
-    private int mBeginSheetIndex;
-    private int mEndSheetIndex;
-    private int mBeginRow;
-    private int mEndRow;
 
     public ToolFrame() {
         initFrame();
@@ -391,7 +391,7 @@ public class ToolFrame extends JFrame implements ActionListener, ItemListener {
         removePal.add(removePal_3);
         removePal.add(removePal_4);
 
-        mRemoveConfirmBtn = new JButton("删除确认执行");
+        mRemoveConfirmBtn = new JButton("确认删除");
         mRemoveConfirmBtn.addActionListener(this);
         mRemoveConfirmBtn.setFont(new ToolFont());
         JPanel confirmPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -402,15 +402,15 @@ public class ToolFrame extends JFrame implements ActionListener, ItemListener {
         JLabel insertLab1 = new JLabel("开始表序号（1、2、3...）：");
         JLabel insertLab2 = new JLabel("结束表序号（1、2、3...）：");
         JLabel insertLab3 = new JLabel("开始插入行序号(1、2、3...)：");
-        JLabel insertLab4 = new JLabel("要插入的行数：");
+        JLabel insertLab4 = new JLabel("要插入多少行：");
         insertLab1.setFont(new ToolFont());
         insertLab2.setFont(new ToolFont());
         insertLab3.setFont(new ToolFont());
         insertLab4.setFont(new ToolFont());
-        JTextField insertField1 = new JTextField(15);
-        JTextField insertField2 = new JTextField(15);
-        JTextField insertField3 = new JTextField(15);
-        JTextField insertField4 = new JTextField(15);
+        insertField1 = new JTextField(15);
+        insertField2 = new JTextField(15);
+        insertField3 = new JTextField(15);
+        insertField4 = new JTextField(15);
         JPanel insertPal_1 = new JPanel();
         JPanel insertPal_2 = new JPanel();
         JPanel insertPal_3 = new JPanel();
@@ -428,8 +428,9 @@ public class ToolFrame extends JFrame implements ActionListener, ItemListener {
         insertPal.add(insertPal_3);
         insertPal.add(insertPal_4);
 
-        mInsertConfirmBtn = new JButton("添加确认执行");
+        mInsertConfirmBtn = new JButton("确认插入");
         mInsertConfirmBtn.setFont(new ToolFont());
+        mInsertConfirmBtn.addActionListener(this);
         JPanel insertPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         insertPanel.add(mInsertConfirmBtn);
         insertPal.add(insertPanel);
@@ -686,7 +687,7 @@ public class ToolFrame extends JFrame implements ActionListener, ItemListener {
             mInfoLab.setText("复制列说明：将表readSheetIndex的readColume列数据" +
                     "，复制到beginSheetIndex表到endSheetIndex的writeColume" +
                     "列中。\n比如：填入参数 1  2  10 3 3。意思是读取表1第3列的数据然后将第3列数据复制到表2到表10的第3列中");
-        } else if ("删除确认执行".equals(btn)) {
+        } else if ("确认删除".equals(btn)) {
             int beginSheetIndex = 0;
             int endSheetIndex = 0;
             int beginRow = 0;
@@ -707,6 +708,28 @@ public class ToolFrame extends JFrame implements ActionListener, ItemListener {
                 return;
             } else {
                 Main.removeRow(FILEPATH, beginSheetIndex, endSheetIndex, beginRow, endRow);
+            }
+        } else if ("确认插入".equals(btn)) {
+            int beginSheetIndex = 0;
+            int endSheetIndex = 0;
+            int beginRow = 0;
+            int lines = 0;
+
+            try {
+                beginSheetIndex = Integer.parseInt(insertField1.getText().trim());
+                endSheetIndex = Integer.parseInt(insertField2.getText().trim());
+                beginRow = Integer.parseInt(insertField3.getText().trim());
+                lines = Integer.parseInt(insertField4.getText().trim());
+            } catch (NumberFormatException e1) {
+                showLog("警告！！！参数填写有误，请检查后重新输入。");
+                return;
+            }
+
+            if (FILEPATH.equals("")) {
+                showLog("警告！！！还未选择文件。");
+                return;
+            } else {
+                Main.insertRow(FILEPATH, beginSheetIndex, endSheetIndex, beginRow, lines);
             }
         }
     }

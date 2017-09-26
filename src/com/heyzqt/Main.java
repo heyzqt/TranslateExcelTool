@@ -446,18 +446,41 @@ public class Main {
      * @param beginRow        从哪行开始插入(从1开始),在beginRow+1行插入lines行
      * @param lines           插入几行
      */
-    private static void insertRow(int beginSheetIndex, int endSheetIndex, int beginRow, int lines) {
+    public static void insertRow(String filepath, int beginSheetIndex, int endSheetIndex, int beginRow, int lines) {
         beginSheetIndex -= 1;
         endSheetIndex -= 1;
-        File file = new File(FILENAME);
+        File file = new File(filepath);
         try {
             System.out.println("insert begin");
+            ToolFrame.showLog("insert begin");
             InputStream in = new FileInputStream(file);
             WorkbookSettings settings = new WorkbookSettings();
             //保证读取（read）excel的编码格式和写入（write）的编码格式统一，避免乱码
             settings.setEncoding("ISO-8859-1");
             //创建工作簿
             Workbook workbook = Workbook.getWorkbook(in, settings);
+
+            if (beginSheetIndex < 0) {
+                System.out.println("error beginSheetIndex参数有误");
+                ToolFrame.showLog("error beginSheetIndex参数有误，请重新输入！");
+                return;
+            }
+            if (endSheetIndex >= workbook.getNumberOfSheets()) {
+                System.out.println("error endSheetIndex参数有误");
+                ToolFrame.showLog("error endSheetIndex参数有误，请重新输入！");
+                return;
+            }
+            if (beginSheetIndex > endSheetIndex) {
+                System.out.println("error sheetIndex参数有误");
+                ToolFrame.showLog("error sheetIndex参数有误，请重新输入！");
+                return;
+            }
+            if (lines <= 0) {
+                System.out.println("error 插入行数参数有误");
+                ToolFrame.showLog("error 插入行数参数有误!");
+                return;
+            }
+
             //创建可写入的工作簿,根据book创建一个操作对象
             WritableWorkbook writableWorkbook = Workbook.createWorkbook(file, workbook, settings);
 
@@ -472,6 +495,7 @@ public class Main {
             writableWorkbook.write();
             writableWorkbook.close();
             System.out.println("insert end");
+            ToolFrame.showLog("insert end");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
