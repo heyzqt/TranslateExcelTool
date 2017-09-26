@@ -57,12 +57,6 @@ public class Main {
 //                , 3, 2, 2, 2);
     }
 
-    private static void initFrame() {
-
-
-
-    }
-
     private static String createFileNames(String[] filenames, String regex, String replacement) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < filenames.length; i++) {
