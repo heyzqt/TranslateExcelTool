@@ -15,6 +15,7 @@ import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
 
 import javax.swing.*;
+import javax.tools.Tool;
 import java.awt.*;
 import java.io.*;
 import java.util.Iterator;
@@ -589,7 +590,7 @@ public class Main {
      * @param readColume      读取列序号(行序号从1开始)
      * @param writeColume     写入列序号(行序号从1开始)
      */
-    private static void copyRowA2RowB(String filepath, int readSheetIndex, int beginSheetIndex, int endSheetIndex, int
+    public static void copyRowA2RowB(String filepath, int readSheetIndex, int beginSheetIndex, int endSheetIndex, int
             readColume, int writeColume) {
         readSheetIndex -= 1;
         beginSheetIndex -= 1;
@@ -599,12 +600,30 @@ public class Main {
         File file = new File(filepath);
         try {
             System.out.println("copy begin");
+            ToolFrame.showLog("copy begin");
             InputStream in = new FileInputStream(file);
             WorkbookSettings settings = new WorkbookSettings();
             //保证读取（read）excel的编码格式和写入（write）的编码格式统一，避免乱码
             settings.setEncoding("ISO-8859-1");
             //创建工作簿
             Workbook workbook = Workbook.getWorkbook(in, settings);
+
+            if (beginSheetIndex < 0) {
+                System.out.println("error beginSheetIndex参数有误");
+                ToolFrame.showLog("error beginSheetIndex参数有误，请重新输入！");
+                return;
+            }
+            if (endSheetIndex >= workbook.getNumberOfSheets()) {
+                System.out.println("error endSheetIndex参数有误");
+                ToolFrame.showLog("error endSheetIndex参数有误，请重新输入！");
+                return;
+            }
+            if (beginSheetIndex > endSheetIndex) {
+                System.out.println("error sheetIndex参数有误");
+                ToolFrame.showLog("error sheetIndex参数有误，请重新输入！");
+                return;
+            }
+
             //创建可写入的工作簿,根据book创建一个操作对象
             WritableWorkbook writableWorkbook = Workbook.createWorkbook(file, workbook, settings);
 
@@ -626,6 +645,7 @@ public class Main {
             writableWorkbook.write();
             writableWorkbook.close();
             System.out.println("copy end");
+            ToolFrame.showLog("copy end");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {

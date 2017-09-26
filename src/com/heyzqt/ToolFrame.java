@@ -65,6 +65,11 @@ public class ToolFrame extends JFrame implements ActionListener, ItemListener {
     private JTextField insertField2;
     private JTextField insertField3;
     private JTextField insertField4;
+    private JTextField cpColField1;
+    private JTextField cpColField2;
+    private JTextField cpColField3;
+    private JTextField cpColField4;
+    private JTextField cpColField5;
 
 
     private JPanel mExcel2XMLPanel;
@@ -503,11 +508,11 @@ public class ToolFrame extends JFrame implements ActionListener, ItemListener {
         cpColLab3.setFont(new ToolFont());
         cpColLab4.setFont(new ToolFont());
         cpColLab5.setFont(new ToolFont());
-        JTextField cpColField1 = new JTextField(15);
-        JTextField cpColField2 = new JTextField(15);
-        JTextField cpColField3 = new JTextField(15);
-        JTextField cpColField4 = new JTextField(15);
-        JTextField cpColField5 = new JTextField(15);
+        cpColField1 = new JTextField(15);
+        cpColField2 = new JTextField(15);
+        cpColField3 = new JTextField(15);
+        cpColField4 = new JTextField(15);
+        cpColField5 = new JTextField(15);
         JPanel cpColPal_1 = new JPanel();
         JPanel cpColPal_2 = new JPanel();
         JPanel cpColPal_3 = new JPanel();
@@ -529,8 +534,9 @@ public class ToolFrame extends JFrame implements ActionListener, ItemListener {
         cpColPal.add(cpColPal_4);
         cpColPal.add(cpColPal_5);
 
-        mCpColConfirmBtn = new JButton("复制列确认执行");
+        mCpColConfirmBtn = new JButton("确认复制列");
         mCpColConfirmBtn.setFont(new ToolFont());
+        mCpColConfirmBtn.addActionListener(this);
         JPanel cpColPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         cpColPanel.add(mCpColConfirmBtn);
         cpColPal.add(cpColPanel);
@@ -706,9 +712,8 @@ public class ToolFrame extends JFrame implements ActionListener, ItemListener {
             if (FILEPATH.equals("")) {
                 showLog("警告！！！还未选择文件。");
                 return;
-            } else {
-                Main.removeRow(FILEPATH, beginSheetIndex, endSheetIndex, beginRow, endRow);
             }
+            Main.removeRow(FILEPATH, beginSheetIndex, endSheetIndex, beginRow, endRow);
         } else if ("确认插入".equals(btn)) {
             int beginSheetIndex = 0;
             int endSheetIndex = 0;
@@ -728,9 +733,31 @@ public class ToolFrame extends JFrame implements ActionListener, ItemListener {
             if (FILEPATH.equals("")) {
                 showLog("警告！！！还未选择文件。");
                 return;
-            } else {
-                Main.insertRow(FILEPATH, beginSheetIndex, endSheetIndex, beginRow, lines);
             }
+            Main.insertRow(FILEPATH, beginSheetIndex, endSheetIndex, beginRow, lines);
+        } else if ("确认复制列".equals(btn)) {
+            int readSheetIndex = 0;
+            int beginSheetIndex = 0;
+            int endSheetIndex = 0;
+            int readCol = 0;
+            int writeCol = 0;
+
+            try {
+                readSheetIndex = Integer.parseInt(cpColField1.getText().trim());
+                beginSheetIndex = Integer.parseInt(cpColField2.getText().trim());
+                endSheetIndex = Integer.parseInt(cpColField3.getText().trim());
+                readCol = Integer.parseInt(cpColField4.getText().trim());
+                writeCol = Integer.parseInt(cpColField4.getText().trim());
+            } catch (NumberFormatException e1) {
+                showLog("警告！！！参数填写有误，请检查后重新输入。");
+                return;
+            }
+
+            if (FILEPATH.equals("")) {
+                showLog("警告！！！还未选择文件。");
+                return;
+            }
+            Main.copyRowA2RowB(FILEPATH, readSheetIndex, beginSheetIndex, endSheetIndex, readCol, writeCol);
         }
     }
 
