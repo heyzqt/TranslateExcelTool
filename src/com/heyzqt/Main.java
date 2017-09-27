@@ -26,15 +26,15 @@ public class Main {
 
     private final static String STANDARDNAME = "menu_arrays_";
 
-    private final static String[] filenames = {"menu_arrays_ar.xml", "menu_arrays_bg_rBG.xml", "menu_arrays_cs.xml",
-            "menu_arrays_da.xml", "menu_arrays_de.xml", "menu_arrays_el_rGR.xml", "menu_arrays_es.xml",
-            "menu_arrays_fa_rIR.xml", "menu_arrays_fi.xml", "menu_arrays_fr.xml", "menu_arrays_hr.xml",
-            "menu_arrays_hu.xml", "menu_arrays_in_rID.xml", "menu_arrays_it.xml", "menu_arrays_iw_rIL.xml",
-            "menu_arrays_mn_rMN.xml", "menu_arrays_ms_rMY.xml", "menu_arrays_my_rMM.xml", "menu_arrays_nl.xml",
-            "menu_arrays_no_rNOR.xml", "menu_arrays_pl.xml", "menu_arrays_pt.xml", "menu_arrays_ro.xml",
-            "menu_arrays_ru.xml", "menu_arrays_sk.xml", "menu_arrays_sl.xml", "menu_arrays_sq_rAL.xml",
-            "menu_arrays_sr.xml", "menu_arrays_sv.xml", "menu_arrays_sw_rTZ.xml", "menu_arrays_ta_rIN.xml",
-            "menu_arrays_th.xml", "menu_arrays_tr.xml", "menu_arrays_uk_rUA.xml", "menu_arrays_vi_rVN.xml"};
+//    private final static String[] filenames = {"menu_arrays_ar.xml", "menu_arrays_bg_rBG.xml", "menu_arrays_cs.xml",
+//            "menu_arrays_da.xml", "menu_arrays_de.xml", "menu_arrays_el_rGR.xml", "menu_arrays_es.xml",
+//            "menu_arrays_fa_rIR.xml", "menu_arrays_fi.xml", "menu_arrays_fr.xml", "menu_arrays_hr.xml",
+//            "menu_arrays_hu.xml", "menu_arrays_in_rID.xml", "menu_arrays_it.xml", "menu_arrays_iw_rIL.xml",
+//            "menu_arrays_mn_rMN.xml", "menu_arrays_ms_rMY.xml", "menu_arrays_my_rMM.xml", "menu_arrays_nl.xml",
+//            "menu_arrays_no_rNOR.xml", "menu_arrays_pl.xml", "menu_arrays_pt.xml", "menu_arrays_ro.xml",
+//            "menu_arrays_ru.xml", "menu_arrays_sk.xml", "menu_arrays_sl.xml", "menu_arrays_sq_rAL.xml",
+//            "menu_arrays_sr.xml", "menu_arrays_sv.xml", "menu_arrays_sw_rTZ.xml", "menu_arrays_ta_rIN.xml",
+//            "menu_arrays_th.xml", "menu_arrays_tr.xml", "menu_arrays_uk_rUA.xml", "menu_arrays_vi_rVN.xml"};
 
 
     private static boolean isFileExisted = false;
@@ -42,15 +42,18 @@ public class Main {
     public static void main(String[] args) {
         // write your code here
 
-        //new ToolFrame();
+        new ToolFrame();
 
+//        String[] countries = {"fr", "pl", "sw_TZ", "zz"};
+//        Main.transformEXCEL2XML(FILENAME, Main.XMLPATH, countries,
+//                3, 2, 2, 4);
         //removeRow(FILENAME, 1, 35, 4, 90);
         //insertRow(1, 35, 2, 1);
 //        addSingleCell(FILENAME, 1, 35,
 //                2, 5, 2, 8, 3);
         //copyRowA2RowB(FILENAME, 1, 2, 35, 3, 3);
-        transformEXCEL2XML(FILENAME, XMLPATH, filenames, 1,
-                35, 3, 2, 2, 4);
+//        transformEXCEL2XML(FILENAME, XMLPATH, filenames, 1,
+//                35, 3, 2, 2, 4);
 //        transformEXCEL2XMLArray(FILENAME, XMLPATH, 1, 35
 //                , 3, 2, 2, 2);
     }
@@ -144,6 +147,7 @@ public class Main {
 
         try {
             System.out.println("transform begin");
+            ToolFrame.showLog("transform begin");
             InputStream in = new FileInputStream(file);
             WorkbookSettings settings = new WorkbookSettings();
             //保证读取（read）excel的编码格式和写入（write）的编码格式统一，避免乱码
@@ -190,9 +194,11 @@ public class Main {
                 }
                 index++;
                 System.out.println();
+                ToolFrame.showLog("");
             }
 
             System.out.println("transform end");
+            ToolFrame.showLog("transform end");
 
             System.out.println("二维数组：");
             for (int i = 0; i < keys_values.length; i++) {
@@ -212,7 +218,7 @@ public class Main {
                 values[2] = keys_values[2][i];
                 values[3] = keys_values[3][i];
                 values[4] = keys_values[4][i];
-                write2XMLArray(xmlPath, filenames[i], beginRowIndex, endRowIndex, keys, values);
+                //write2XMLArray(xmlPath, filenames[i], beginRowIndex, endRowIndex, keys, values);
             }
             return true;
         } catch (FileNotFoundException e) {
@@ -254,6 +260,7 @@ public class Main {
 
         try {
             System.out.println("transform begin");
+            ToolFrame.showLog("transform begin");
             InputStream in = new FileInputStream(file);
             WorkbookSettings settings = new WorkbookSettings();
             //保证读取（read）excel的编码格式和写入（write）的编码格式统一，避免乱码
@@ -312,6 +319,7 @@ public class Main {
 
             System.out.println();
             System.out.println("transform end");
+            ToolFrame.showLog("transform end");
 
             System.out.println("二维数组：");
             for (int i = 0; i < keys_values.length; i++) {
@@ -339,6 +347,155 @@ public class Main {
                     write2XML(xmlPath, filenames[i], beginRowIndex, endRowIndex, keys, values);
                 }
             }
+            return true;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            ToolFrame.showLog("error！！！文件正在被占用，请先关闭文件。");
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (BiffException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public static boolean transformEXCEL2XML(String excelPath, String xmlPath, String[] filenames,
+                                             String[] countriesname,
+                                             int keyColumnIndex, int valueColumnIndex,
+                                             int beginRowIndex, int endRowIndex) {
+        beginRowIndex -= 1;
+        endRowIndex -= 1;
+        keyColumnIndex -= 1;
+        valueColumnIndex -= 1;
+        File file = new File(excelPath);
+        String[] keys = new String[endRowIndex - beginRowIndex + 1];
+        int countriesLength = countriesname.length;
+        int[] sheets_index = new int[countriesLength];
+        for (int i = 0; i < sheets_index.length; i++) {
+            sheets_index[i] = -1;
+        }
+        //first index : the number of keys
+        //second index : the number of values
+        String[][] keys_values = new String[endRowIndex - beginRowIndex + 1][countriesLength];
+
+        try {
+            System.out.println("transform begin");
+            ToolFrame.showLog("transform begin");
+            InputStream in = new FileInputStream(file);
+            WorkbookSettings settings = new WorkbookSettings();
+            //保证读取（read）excel的编码格式和写入（write）的编码格式统一，避免乱码
+            settings.setEncoding("ISO-8859-1");
+            Workbook workbook = Workbook.getWorkbook(in, settings);
+
+            Sheet[] sheets = workbook.getSheets();
+            //find the sheets index which are needed to transform to XML file
+            int m = 0;
+            int flag = 0;
+            int[] recordCountriesIndex = new int[countriesLength];
+            for (int i = 0; i < recordCountriesIndex.length; i++) {
+                recordCountriesIndex[i] = -1;
+            }
+            for (int i = 0; i < countriesname.length; i++) {
+                for (int j = flag; j < sheets.length; j++) {
+                    int check = sheets[j].getName().indexOf(countriesname[i]);
+                    if (check != -1) {
+                        sheets_index[m++] = j;
+                        recordCountriesIndex[i] = 1;
+                        flag = j;
+                        flag++;
+                        break;
+                    }
+                }
+            }
+
+
+            //print selected sheets index
+            System.out.println("selected index : ");
+            ToolFrame.showLog("selected index : ");
+            boolean ifExited = false;
+            int n = 0;
+            for (int i = 0; i < sheets_index.length; i++) {
+                System.out.print("  " + sheets_index[i]);
+                ToolFrame.showLogInfo("  " + sheets_index[i]);
+            }
+            System.out.println();
+            for (int i = 0; i < recordCountriesIndex.length; i++) {
+                if (recordCountriesIndex[i] == -1) {
+                    System.out.println("error!!! There is no such country in the Excel : " + countriesname[i]);
+                    ToolFrame.showLog("error!!! There is no such country in the Excel : " + countriesname[i]);
+                    ifExited = true;
+                }
+            }
+            if (ifExited) {
+                return false;
+            }
+            System.out.println();
+
+            //find keys
+            int x = 0;
+            for (int i = beginRowIndex; i <= endRowIndex; i++) {
+                Sheet sheet = workbook.getSheet(0);
+                keys[x] = sheet.getCell(keyColumnIndex, i).getContents();
+                System.out.println(keys[x]);
+                x++;
+            }
+
+            System.out.println();
+
+            //find values
+            int index = 0;
+            for (int i = 0; i < countriesLength; i++) {
+                System.out.println("i = " + i + " sheet name = " + sheets[sheets_index[i]].getName());
+                ToolFrame.showLog("i = " + i + " sheet name = " + sheets[sheets_index[i]].getName());
+                int row_index = 0;
+                for (int j = beginRowIndex; j <= endRowIndex; j++) {
+//                    System.out.println("row " + (j + 1) + " : " + sheets[i].getCell(keyColumnIndex, j)
+//                            .getContents() +
+//                            "," + sheets[i].getCell(valueColumnIndex, j).getContents());
+
+                    keys_values[row_index++][index] = sheets[sheets_index[i]]
+                            .getCell(valueColumnIndex, j).getContents();
+
+//                    //这里根据需要添加的行数添加,这里我们添加2行
+//                    if (j == beginRowIndex) {
+//                        keys_values[0][index] = sheets[i].getCell(valueColumnIndex, j).getContents();
+//                    } else if (j == beginRowIndex + 1) {
+//                        keys_values[1][index] = sheets[i].getCell(valueColumnIndex, j).getContents();
+//                    }
+                }
+                index++;
+            }
+
+            System.out.println("二维数组：");
+            ToolFrame.showLog("二维数组：\n");
+            for (int i = 0; i < keys_values.length; i++) {
+                for (int j = 0; j < keys_values[0].length; j++) {
+                    System.out.print(keys_values[i][j] + ", ");
+                    ToolFrame.showLogInfo(keys_values[i][j] + ",");
+                }
+                System.out.println();
+                ToolFrame.showLog("");
+            }
+
+            //change excel to xml
+            int lines = endRowIndex - beginRowIndex + 1;
+            System.out.println("要修改的行数 lines = " + lines);
+            for (int i = 0; i < countriesLength; i++) {
+                String[] values = new String[lines];
+                for (int j = 0; j < lines; j++) {
+                    values[j] = keys_values[j][i];
+                }
+//                //这里根据需要添加的行数添加,这里我们添加2行
+//                String[] values = new String[2];
+//                values[0] = keys_values[0][i];
+//                values[1] = keys_values[1][i];
+                if (!isFileExisted) {
+                    write2XML(xmlPath, filenames[i], beginRowIndex, endRowIndex, keys, values);
+                }
+            }
+            System.out.println();
+            System.out.println("transform end");
+            ToolFrame.showLog("transform end");
             return true;
         } catch (FileNotFoundException e) {
             e.printStackTrace();

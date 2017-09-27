@@ -132,8 +132,6 @@ public class ToolFrame extends JFrame implements ActionListener, ItemListener {
      * transform Excel to XML file
      */
     private JPanel mExcel2XMLPanel;
-    private JTextField transformField1;
-    private JTextField transformField2;
     private JTextField transformField3;
     private JTextField transformField4;
     private JTextField transformField5;
@@ -685,20 +683,14 @@ public class ToolFrame extends JFrame implements ActionListener, ItemListener {
         mExcel2XMLPanel.add(thr_menu_stringsBtn);
         mExcel2XMLPanel.add(timeshift_stringsBtn);
 
-        JLabel transformLab1 = new JLabel("开始表序号（1、2、3...）：");
-        JLabel transformLab2 = new JLabel("结束表序号（1、2、3...）：");
         JLabel transformLab3 = new JLabel("key值列数序号(1、2、3...)：");
         JLabel transformLab4 = new JLabel("value值列数序号(1、2、3...)：");
         JLabel transformLab5 = new JLabel("开始写入行序号(1、2、3...)：");
         JLabel transformLab6 = new JLabel("结束写入行序号(1、2、3...)：");
-        transformLab1.setFont(new ToolFont());
-        transformLab2.setFont(new ToolFont());
         transformLab3.setFont(new ToolFont());
         transformLab4.setFont(new ToolFont());
         transformLab5.setFont(new ToolFont());
         transformLab6.setFont(new ToolFont());
-        transformField1 = new JTextField(15);
-        transformField2 = new JTextField(15);
         transformField3 = new JTextField(15);
         transformField4 = new JTextField(15);
         transformField5 = new JTextField(15);
@@ -709,10 +701,6 @@ public class ToolFrame extends JFrame implements ActionListener, ItemListener {
         JPanel transformPal_4 = new JPanel();
         JPanel transformPal_5 = new JPanel();
         JPanel transformPal_6 = new JPanel();
-        transformPal_1.add(transformLab1);
-        transformPal_1.add(transformField1);
-        transformPal_2.add(transformLab2);
-        transformPal_2.add(transformField2);
         transformPal_3.add(transformLab3);
         transformPal_3.add(transformField3);
         transformPal_4.add(transformLab4);
@@ -869,7 +857,7 @@ public class ToolFrame extends JFrame implements ActionListener, ItemListener {
             //create file name
             showLog("The number of selected countries is " + count);
             showLog("selected file type is " + mFileType);
-            String[] filenames = new String[count];
+            String[] filenames = null;
             String[] countries;
             countries = selectedCountries(count);
             showLog("choose countries = " + Arrays.toString(countries));
@@ -896,34 +884,31 @@ public class ToolFrame extends JFrame implements ActionListener, ItemListener {
                     filenames = Main.createFileNames(Constant.FILE_THR_MENU_STRINGS, countries, count);
                     break;
             }
+
+            if (filenames == null) {
+                showLog("error!!! filenames is null");
+            }
             showLog("files name :  \n" + Arrays.toString(filenames));
 
-//            int beginSheetIndex = 0;
-//            int endSheetIndex = 0;
-//            int keyCol = 0;
-//            int valueCol = 0;
-//            int beginRow = 0;
-//            int endRow = 0;
-//
-//            try {
-//                beginSheetIndex = Integer.parseInt(transformField1.getText().trim());
-//                endSheetIndex = Integer.parseInt(transformField2.getText().trim());
-//                keyCol = Integer.parseInt(transformField3.getText().trim());
-//                valueCol = Integer.parseInt(transformField4.getText().trim());
-//                beginRow = Integer.parseInt(transformField5.getText().trim());
-//                endRow = Integer.parseInt(transformField6.getText().trim());
-//            } catch (NumberFormatException e1) {
-//                showLog("警告！！！参数填写有误，请检查后重新输入。");
-//                return;
-//            }
-//
-//            if (FILEPATH.equals("")) {
-//                showLog("警告！！！还未选择文件。");
-//                return;
-//            }
+            if (FILEPATH.equals("")) {
+                showLog("警告！！！还未选择文件。");
+                return;
+            }
 
-//            Main.transformEXCEL2XML(FILEPATH, Main.XMLPATH, beginSheetIndex, endSheetIndex
-//                    , keyCol, valueCol, beginRow, endRow);
+            int keyCol = 0;
+            int valueCol = 0;
+            int beginRow = 0;
+            int endRow = 0;
+            try {
+                keyCol = Integer.parseInt(transformField3.getText().trim());
+                valueCol = Integer.parseInt(transformField4.getText().trim());
+                beginRow = Integer.parseInt(transformField5.getText().trim());
+                endRow = Integer.parseInt(transformField6.getText().trim());
+            } catch (NumberFormatException e1) {
+                showLog("警告！！！参数填写有误，请检查后重新输入。");
+                return;
+            }
+            Main.transformEXCEL2XML(FILEPATH, Main.XMLPATH, filenames, countries, keyCol, valueCol, beginRow, endRow);
         } else if ("clear log".equals(btn)) {
             mLogArea.setText("");
         }
@@ -1111,5 +1096,9 @@ public class ToolFrame extends JFrame implements ActionListener, ItemListener {
 
     public static void showLog(String msg) {
         mLogArea.append("\n" + msg);
+    }
+
+    public static void showLogInfo(String msg) {
+        mLogArea.append(msg);
     }
 }
