@@ -6,6 +6,7 @@ import com.widget.FileChooser;
 import com.widget.ToolFont;
 
 import javax.swing.*;
+import javax.swing.plaf.MenuBarUI;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -157,6 +158,22 @@ public class ToolFrame extends JFrame implements ActionListener, ItemListener {
         mFrame = new JFrame(Constant.FRAME_TITLE + "_" + Constant.TOOL_VERSION + "_" + Constant.TOOL_DEVELOPER);
 
         mMainPanel = new JPanel(new GridLayout(4, 1));
+
+        //add menu bar
+        JMenuBar menubar = new JMenuBar();
+        mFrame.setJMenuBar(menubar);
+        JMenu menu = new JMenu("功能选择");
+        menu.setFont(new Font("微软雅黑", Font.PLAIN, 24));
+        JMenuItem menuItem1 = new JMenuItem("处理Excel");
+        JMenuItem menuItem2 = new JMenuItem("转Excel为XML文件");
+        menuItem1.addActionListener(new MenuActionListener());
+        menuItem2.addActionListener(new MenuActionListener());
+        menuItem1.setFont(new ToolFont());
+        menuItem2.setFont(new ToolFont());
+        menu.add(menuItem1);
+        menu.add(menuItem2);
+        menubar.add(menu);
+
 
         initChooseExcelPanel();
 
@@ -1090,6 +1107,19 @@ public class ToolFrame extends JFrame implements ActionListener, ItemListener {
             if (jrb.isSelected()) {
                 mLogArea.append("\n" + jrb.getText().toString() + " is choosed.");
                 mFileType = jrb.getText().toString();
+            }
+        }
+    }
+
+    class MenuActionListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            String menu = e.getActionCommand();
+            if ("处理Excel".equals(menu)) {
+                System.out.println("hello");
+            } else if ("转Excel为XML文件".equals(menu)) {
+                System.out.println("world");
             }
         }
     }
