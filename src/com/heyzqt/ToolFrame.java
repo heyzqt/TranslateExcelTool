@@ -1,12 +1,10 @@
 package com.heyzqt;
 
-import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import com.widget.DefaultFont;
 import com.widget.FileChooser;
 import com.widget.ToolFont;
 
 import javax.swing.*;
-import javax.swing.plaf.MenuBarUI;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -28,6 +26,13 @@ public class ToolFrame extends JFrame implements ActionListener, ItemListener {
      * main panel
      */
     private JPanel mMainPanel;
+    private CardLayout mMainCard;
+
+    /**
+     * menu bar and default panel
+     */
+    private JMenuBar menubar;
+    private JPanel defaultPanel;
 
     /**
      * choose excel panel
@@ -91,7 +96,6 @@ public class ToolFrame extends JFrame implements ActionListener, ItemListener {
     /**
      * Excel operations
      */
-    private JPanel mExcelPanel;
     private JPanel mInfoPanel;
     private JPanel mIndexCardPanel;
     private JButton mRemoveBtn;
@@ -150,6 +154,13 @@ public class ToolFrame extends JFrame implements ActionListener, ItemListener {
 
     private String FILEPATH = "";
 
+    /**
+     * card layout names
+     */
+    private static final String DEFAULT_PANEL = "main_default_panel";
+    private static final String EXCEL_OPERATIONS_PANEL = "excel_operations_panel";
+    private static final String EXCEL_TRANSFORM_PANEL = "excel_transform_panel";
+
     public ToolFrame() {
         initFrame();
     }
@@ -157,11 +168,53 @@ public class ToolFrame extends JFrame implements ActionListener, ItemListener {
     private void initFrame() {
         mFrame = new JFrame(Constant.FRAME_TITLE + "_" + Constant.TOOL_VERSION + "_" + Constant.TOOL_DEVELOPER);
 
-        mMainPanel = new JPanel(new GridLayout(4, 1));
+        mMainCard = new CardLayout();
+        mMainPanel = new JPanel(mMainCard);
 
-        //add menu bar
-        JMenuBar menubar = new JMenuBar();
+        initMenuBar();
+
+        initDefaultPanel();
+
+        initChooseExcelPanel();
+
+        initExcelOperationsPanel();
+
+        initChooseCountryPanel();
+
+        initTransformPanel();
+
+        initLogPanel();
+
+        JPanel panel_1 = new JPanel(new BorderLayout());
+        panel_1.add(mChooseExcelPanel, BorderLayout.WEST);
+        panel_1.add(mChooseCountryPanel, BorderLayout.CENTER);
+        //mMainPanel.add(panel_1);
+        //mMainPanel.add(mExcelPanel);
+        //mMainPanel.add(mExcel2XMLPanel);
+//        JPanel panel4_1 = new JPanel(new BorderLayout());
+//        JButton clearLogBtn = new JButton("clear log");
+//        clearLogBtn.setFont(new ToolFont());
+//        clearLogBtn.addActionListener(this);
+//        panel4_1.add(mLogScrollPane, BorderLayout.CENTER);
+//        JPanel temp = new JPanel(new FlowLayout());
+//        temp.add(clearLogBtn);
+//        panel4_1.add(temp, BorderLayout.SOUTH);
+        //mMainPanel.add(panel4_1);
+
         mFrame.setJMenuBar(menubar);
+        //mMainPanel.add(DEFAULT_PANEL, defaultPanel);
+        mMainPanel.add(EXCEL_OPERATIONS_PANEL, mChooseExcelPanel);
+        mMainPanel.add(EXCEL_TRANSFORM_PANEL, mExcel2XMLPanel);
+        mFrame.setSize(1280, 960);
+        mFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        mFrame.setLocationRelativeTo(null);
+        mFrame.setVisible(true);
+        mFrame.add(mMainPanel);
+    }
+
+    private void initMenuBar() {
+        //add menu bar
+        menubar = new JMenuBar();
         JMenu menu = new JMenu("功能选择");
         menu.setFont(new Font("微软雅黑", Font.PLAIN, 24));
         JMenuItem menuItem1 = new JMenuItem("处理Excel");
@@ -173,55 +226,289 @@ public class ToolFrame extends JFrame implements ActionListener, ItemListener {
         menu.add(menuItem1);
         menu.add(menuItem2);
         menubar.add(menu);
+    }
 
-
-        initChooseExcelPanel();
-
-        initChooseCountryPanel();
-
-        initExcelOperationsPanel();
-
-        initTransformPanel();
-
-        initLogPanel();
-
-        JPanel panel_1 = new JPanel(new BorderLayout());
-        panel_1.add(mChooseExcelPanel, BorderLayout.WEST);
-        panel_1.add(mChooseCountryPanel, BorderLayout.CENTER);
-        mMainPanel.add(panel_1);
-        mMainPanel.add(mExcelPanel);
-        mMainPanel.add(mExcel2XMLPanel);
-        JPanel panel4_1 = new JPanel(new BorderLayout());
-        JButton clearLogBtn = new JButton("clear log");
-        clearLogBtn.setFont(new ToolFont());
-        clearLogBtn.addActionListener(this);
-        panel4_1.add(mLogScrollPane, BorderLayout.CENTER);
-        JPanel temp = new JPanel(new FlowLayout());
-        temp.add(clearLogBtn);
-        panel4_1.add(temp, BorderLayout.SOUTH);
-        mMainPanel.add(panel4_1);
-
-        mFrame.setSize(1280, 960);
-        mFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        mFrame.setLocationRelativeTo(null);
-        mFrame.setVisible(true);
-        mFrame.add(mMainPanel);
+    private void initDefaultPanel() {
+        //default panel
+        defaultPanel = new JPanel(new BorderLayout());
+        JLabel defaultLab = new JLabel();
+        defaultLab.setText("<html>Welcome to use TranslateExcel tool!<br>" +
+                "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Please choose a function.</html>");
+        defaultLab.setFont(new DefaultFont());
+        defaultLab.setHorizontalAlignment(SwingConstants.CENTER);
+        defaultPanel.add(defaultLab);
+        defaultPanel.add(defaultLab, BorderLayout.CENTER);
     }
 
     private void initChooseExcelPanel() {
         //init choose Excel panel
-        mChooseExcelPanel = new JPanel(new BorderLayout());
-        JPanel panel_1_1 = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        JPanel panel_1_2 = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        mChooseExcelPanel = new JPanel(null);
         mChooseExcelBtn = new JButton("选择Excel文件");
         mChooseExcelLab = new JLabel("文件路径：");
         mChooseExcelLab.setFont(new ToolFont());
         mChooseExcelBtn.setFont(new ToolFont());
+        mChooseExcelBtn.setBounds(150, 40, 230, 40);
+        mChooseExcelLab.setBounds(400, 40, 600, 40);
         mChooseExcelBtn.addActionListener(this);
-        panel_1_1.add(mChooseExcelBtn);
-        panel_1_2.add(mChooseExcelLab);
-        mChooseExcelPanel.add(panel_1_1, BorderLayout.NORTH);
-        mChooseExcelPanel.add(panel_1_2, BorderLayout.CENTER);
+
+        mChooseExcelPanel.add(mChooseExcelBtn);
+        mChooseExcelPanel.add(mChooseExcelLab);
+    }
+
+    private void initExcelOperationsPanel() {
+        //init Excel operations
+        JLabel excelLab = new JLabel("请选择需要进行的操作：");
+        excelLab.setFont(new ToolFont());
+        mRemoveBtn = new JButton("删除行数");
+        mRemoveBtn.setFont(new ToolFont());
+        mInsertBtn = new JButton("插入行数");
+        mInsertBtn.setFont(new ToolFont());
+        mCopyCellBtn = new JButton("复制单元格");
+        mCopyCellBtn.setFont(new ToolFont());
+        mCopyColAToColBBtn = new JButton("复制列");
+        mCopyColAToColBBtn.setFont(new ToolFont());
+        mRemoveBtn.addActionListener(this);
+        mInsertBtn.addActionListener(this);
+        mCopyCellBtn.addActionListener(this);
+        mCopyColAToColBBtn.addActionListener(this);
+        excelLab.setBounds(150, 100, 230, 40);
+        mRemoveBtn.setBounds(400, 105, 120, 35);
+        mInsertBtn.setBounds(550, 105, 120, 35);
+        mCopyCellBtn.setBounds(700, 105, 140, 35);
+        mCopyColAToColBBtn.setBounds(870, 105, 120, 35);
+
+        mChooseExcelPanel.add(excelLab);
+        mChooseExcelPanel.add(mRemoveBtn);
+        mChooseExcelPanel.add(mInsertBtn);
+        mChooseExcelPanel.add(mCopyCellBtn);
+        mChooseExcelPanel.add(mCopyColAToColBBtn);
+
+        // input the paramaters
+        mOperationsCard = new CardLayout();
+        mIndexCardPanel = new JPanel(mOperationsCard);
+        mIndexCardPanel.setBackground(Color.YELLOW);
+        mIndexCardPanel.setBounds(150, 170, 850, 200);
+        removePal = new JPanel(null);
+        insertPal = new JPanel(null);
+        cpCellPal = new JPanel(null);
+        cpColPal = new JPanel(null);
+        mChooseExcelPanel.add(mIndexCardPanel);
+        removePal.setBackground(Color.green);
+
+        // remove panel
+        JLabel removeLab1 = new JLabel("开始表序号（1、2、3...）：");
+        JLabel removeLab2 = new JLabel("结束表序号（1、2、3...）：");
+        JLabel removeLab3 = new JLabel("开始删除行序号(1、2、3...)：");
+        JLabel removeLab4 = new JLabel("结束删除行序号(1、2、3...)：");
+        removeLab1.setFont(new ToolFont());
+        removeLab2.setFont(new ToolFont());
+        removeLab3.setFont(new ToolFont());
+        removeLab4.setFont(new ToolFont());
+        removeField1 = new JTextField(5);
+        removeField2 = new JTextField(5);
+        removeField3 = new JTextField(5);
+        removeField4 = new JTextField(5);
+        removeField1.setFont(new ToolFont());
+        removeField2.setFont(new ToolFont());
+        removeField3.setFont(new ToolFont());
+        removeField4.setFont(new ToolFont());
+        removeLab1.setBounds(0, 10, 260, 20);
+        removeField1.setBounds(240, 5, 150, 30);
+        removeLab2.setBounds(440, 10, 260, 20);
+        removeField2.setBounds(680, 5, 150, 30);
+        removeLab3.setBounds(0, 60, 260, 20);
+        removeField3.setBounds(240, 55, 150, 30);
+        removeLab4.setBounds(440, 60, 260, 20);
+        removeField4.setBounds(680, 55, 150, 30);
+        removePal.add(removeLab1);
+        removePal.add(removeField1);
+        removePal.add(removeLab2);
+        removePal.add(removeField2);
+        removePal.add(removeLab3);
+        removePal.add(removeField3);
+        removePal.add(removeLab4);
+        removePal.add(removeField4);
+
+        mRemoveConfirmBtn = new JButton("确认删除");
+        mRemoveConfirmBtn.addActionListener(this);
+        mRemoveConfirmBtn.setFont(new ToolFont());
+        mRemoveConfirmBtn.setBounds(850 / 2 - 120 / 2, 100, 120, 35);
+        removePal.add(mRemoveConfirmBtn);
+
+        //insert panel
+        JLabel insertLab1 = new JLabel("开始表序号（1、2、3...）：");
+        JLabel insertLab2 = new JLabel("结束表序号（1、2、3...）：");
+        JLabel insertLab3 = new JLabel("开始插入行序号(1、2、3...)：");
+        JLabel insertLab4 = new JLabel("要插入多少行：");
+        insertLab1.setFont(new ToolFont());
+        insertLab2.setFont(new ToolFont());
+        insertLab3.setFont(new ToolFont());
+        insertLab4.setFont(new ToolFont());
+        insertField1 = new JTextField(5);
+        insertField2 = new JTextField(5);
+        insertField3 = new JTextField(5);
+        insertField4 = new JTextField(5);
+        insertField1.setFont(new ToolFont());
+        insertField2.setFont(new ToolFont());
+        insertField3.setFont(new ToolFont());
+        insertField4.setFont(new ToolFont());
+        insertLab1.setBounds(0, 10, 260, 20);
+        insertField1.setBounds(240, 5, 150, 30);
+        insertLab2.setBounds(440, 10, 260, 20);
+        insertField2.setBounds(680, 5, 150, 30);
+        insertLab3.setBounds(0, 60, 260, 20);
+        insertField3.setBounds(240, 55, 150, 30);
+        insertLab4.setBounds(440, 60, 260, 20);
+        insertField4.setBounds(680, 55, 150, 30);
+        insertPal.add(insertLab1);
+        insertPal.add(insertField1);
+        insertPal.add(insertLab2);
+        insertPal.add(insertField2);
+        insertPal.add(insertLab3);
+        insertPal.add(insertField3);
+        insertPal.add(insertLab4);
+        insertPal.add(insertField4);
+
+        mInsertConfirmBtn = new JButton("确认插入");
+        mInsertConfirmBtn.setFont(new ToolFont());
+        mInsertConfirmBtn.addActionListener(this);
+        mInsertConfirmBtn.setBounds(850 / 2 - 120 / 2, 100, 120, 35);
+        insertPal.add(mInsertConfirmBtn);
+
+        //copy cell panel
+        JLabel cpCellLab1 = new JLabel("开始表序号（1、2、3...）：");
+        JLabel cpCellLab2 = new JLabel("结束表序号（1、2、3...）：");
+        JLabel cpCellLab3 = new JLabel("读取单元格列序号(1、2、3...)：");
+        JLabel cpCellLab4 = new JLabel("读取单元格行序号(1、2、3...)：");
+        JLabel cpCellLab5 = new JLabel("写入单元格列序号(1、2、3...)：");
+        JLabel cpCellLab6 = new JLabel("写入单元格行序号(1、2、3...)：");
+        JLabel cpCellLab7 = new JLabel("写入多少行（1、2、3...）：");
+        cpCellLab1.setFont(new ToolFont());
+        cpCellLab2.setFont(new ToolFont());
+        cpCellLab3.setFont(new ToolFont());
+        cpCellLab4.setFont(new ToolFont());
+        cpCellLab5.setFont(new ToolFont());
+        cpCellLab6.setFont(new ToolFont());
+        cpCellLab7.setFont(new ToolFont());
+        cpCellField1 = new JTextField(5);
+        cpCellField2 = new JTextField(5);
+        cpCellField3 = new JTextField(5);
+        cpCellField4 = new JTextField(5);
+        cpCellField5 = new JTextField(5);
+        cpCellField6 = new JTextField(5);
+        cpCellField7 = new JTextField(5);
+        cpCellField1.setFont(new ToolFont());
+        cpCellField2.setFont(new ToolFont());
+        cpCellField3.setFont(new ToolFont());
+        cpCellField4.setFont(new ToolFont());
+        cpCellField5.setFont(new ToolFont());
+        cpCellField6.setFont(new ToolFont());
+        cpCellField7.setFont(new ToolFont());
+
+
+        cpCellLab1.setBounds(0, 10, 260, 20);
+        cpCellField1.setBounds(240, 5, 150, 30);
+        cpCellLab2.setBounds(440, 10, 260, 20);
+        cpCellField2.setBounds(680, 5, 150, 30);
+        cpCellLab3.setBounds(0, 60, 260, 20);
+        cpCellField3.setBounds(240, 55, 150, 30);
+        cpCellLab4.setBounds(440, 60, 260, 20);
+        cpCellField4.setBounds(680, 55, 150, 30);
+        cpCellLab5.setBounds(0, 110, 260, 20);
+        cpCellField5.setBounds(240, 105, 150, 30);
+        cpCellLab6.setBounds(440, 110, 260, 20);
+        cpCellField6.setBounds(680, 105, 150, 30);
+        cpCellLab7.setBounds(0, 160, 260, 20);
+        cpCellField7.setBounds(240, 155, 150, 30);
+
+        cpCellPal.add(cpCellLab1);
+        cpCellPal.add(cpCellField1);
+        cpCellPal.add(cpCellLab2);
+        cpCellPal.add(cpCellField2);
+        cpCellPal.add(cpCellLab3);
+        cpCellPal.add(cpCellField3);
+        cpCellPal.add(cpCellLab4);
+        cpCellPal.add(cpCellField4);
+        cpCellPal.add(cpCellLab5);
+        cpCellPal.add(cpCellField5);
+        cpCellPal.add(cpCellLab6);
+        cpCellPal.add(cpCellField6);
+        cpCellPal.add(cpCellLab7);
+        cpCellPal.add(cpCellField7);
+        cpCellPal.setBackground(Color.red);
+
+        mCpCellConfirmBtn = new JButton("确认复制单元格");
+        mCpCellConfirmBtn.setFont(new ToolFont());
+        mCpCellConfirmBtn.addActionListener(this);
+        mCpCellConfirmBtn.setBounds(440, 155, 160, 35);
+        cpCellPal.add(mCpCellConfirmBtn);
+
+        //copy col panel
+        JLabel cpColLab1 = new JLabel("读取表序号（1、2、3...）：");
+        JLabel cpColLab2 = new JLabel("开始写入表序号（1、2、3...）：");
+        JLabel cpColLab3 = new JLabel("结束写入表序号(1、2、3...)：");
+        JLabel cpColLab4 = new JLabel("读取列序号(1、2、3...)：");
+        JLabel cpColLab5 = new JLabel("写入列序号(1、2、3...)：");
+        cpColLab1.setFont(new ToolFont());
+        cpColLab2.setFont(new ToolFont());
+        cpColLab3.setFont(new ToolFont());
+        cpColLab4.setFont(new ToolFont());
+        cpColLab5.setFont(new ToolFont());
+        cpColField1 = new JTextField(5);
+        cpColField2 = new JTextField(5);
+        cpColField3 = new JTextField(5);
+        cpColField4 = new JTextField(5);
+        cpColField5 = new JTextField(5);
+        cpColField1.setFont(new ToolFont());
+        cpColField2.setFont(new ToolFont());
+        cpColField3.setFont(new ToolFont());
+        cpColField4.setFont(new ToolFont());
+        cpColField5.setFont(new ToolFont());
+        cpColLab1.setBounds(0, 10, 260, 20);
+        cpColField1.setBounds(240, 5, 150, 30);
+        cpColLab2.setBounds(440, 10, 260, 20);
+        cpColField2.setBounds(680, 5, 150, 30);
+        cpColLab3.setBounds(0, 60, 260, 20);
+        cpColField3.setBounds(240, 55, 150, 30);
+        cpColLab4.setBounds(440, 60, 260, 20);
+        cpColField4.setBounds(680, 55, 150, 30);
+        cpColLab5.setBounds(0, 110, 260, 20);
+        cpColField5.setBounds(240, 105, 150, 30);
+
+        cpColPal.add(cpColLab1);
+        cpColPal.add(cpColField1);
+        cpColPal.add(cpColLab2);
+        cpColPal.add(cpColField2);
+        cpColPal.add(cpColLab3);
+        cpColPal.add(cpColField3);
+        cpColPal.add(cpColLab4);
+        cpColPal.add(cpColField4);
+        cpColPal.add(cpColLab5);
+        cpColPal.add(cpColField5);
+
+        mCpColConfirmBtn = new JButton("确认复制列");
+        mCpColConfirmBtn.setFont(new ToolFont());
+        mCpColConfirmBtn.addActionListener(this);
+        mCpColConfirmBtn.setBounds(440, 105, 140, 35);
+        cpColPal.add(mCpColConfirmBtn);
+
+        // add card panel
+        mIndexCardPanel.add("defaultcard", new JLabel());
+        mIndexCardPanel.add("card1", removePal);
+        mIndexCardPanel.add("card2", insertPal);
+        mIndexCardPanel.add("card3", cpCellPal);
+        mIndexCardPanel.add("card4", cpColPal);
+
+        mInfoPanel = new JPanel(new BorderLayout());
+        mInfoLab = new JLabel();
+        mInfoLab.setFont(new ToolFont());
+        mInfoPanel.add(mInfoLab);
+//        JPanel panel = new JPanel();
+//        panel.add(panel_3_1);
+//        panel.add(panel_3_2);
+//        mExcelPanel.add(panel, BorderLayout.NORTH);
+//        mExcelPanel.add(mIndexCardPanel, BorderLayout.CENTER);
+//        mExcelPanel.add(mInfoPanel, BorderLayout.SOUTH);
     }
 
     private void initChooseCountryPanel() {
@@ -424,235 +711,6 @@ public class ToolFrame extends JFrame implements ActionListener, ItemListener {
         mChooseCountryPanel.add(panel_2_2, BorderLayout.CENTER);
     }
 
-    private void initExcelOperationsPanel() {
-        //init Excel operations
-        mExcelPanel = new JPanel(new BorderLayout());
-        JPanel panel_3_1 = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        JPanel panel_3_2 = new JPanel();
-        JLabel excelLab = new JLabel("请选择需要进行的操作：");
-        excelLab.setFont(new ToolFont());
-        mRemoveBtn = new JButton("删除行数");
-        mRemoveBtn.setFont(new ToolFont());
-        mInsertBtn = new JButton("插入行数");
-        mInsertBtn.setFont(new ToolFont());
-        mCopyCellBtn = new JButton("复制单元格");
-        mCopyCellBtn.setFont(new ToolFont());
-        mCopyColAToColBBtn = new JButton("复制列");
-        mCopyColAToColBBtn.setFont(new ToolFont());
-        mRemoveBtn.addActionListener(this);
-        mInsertBtn.addActionListener(this);
-        mCopyCellBtn.addActionListener(this);
-        mCopyColAToColBBtn.addActionListener(this);
-
-        // input the paramaters
-        mOperationsCard = new CardLayout();
-        mIndexCardPanel = new JPanel(mOperationsCard);
-        removePal = new JPanel(new GridLayout(1, 5));
-        insertPal = new JPanel(new GridLayout(1, 5));
-        cpCellPal = new JPanel(new GridLayout(2, 5));
-        cpColPal = new JPanel(new GridLayout(2, 5));
-
-        // remove panel
-        JLabel removeLab1 = new JLabel("开始表序号（1、2、3...）：");
-        JLabel removeLab2 = new JLabel("结束表序号（1、2、3...）：");
-        JLabel removeLab3 = new JLabel("开始删除行序号(1、2、3...)：");
-        JLabel removeLab4 = new JLabel("结束删除行序号(1、2、3...)：");
-        removeLab1.setFont(new ToolFont());
-        removeLab2.setFont(new ToolFont());
-        removeLab3.setFont(new ToolFont());
-        removeLab4.setFont(new ToolFont());
-        removeField1 = new JTextField(15);
-        removeField2 = new JTextField(15);
-        removeField3 = new JTextField(15);
-        removeField4 = new JTextField(15);
-        JPanel removePal_1 = new JPanel();
-        JPanel removePal_2 = new JPanel();
-        JPanel removePal_3 = new JPanel();
-        JPanel removePal_4 = new JPanel();
-        removePal_1.add(removeLab1);
-        removePal_1.add(removeField1);
-        removePal_2.add(removeLab2);
-        removePal_2.add(removeField2);
-        removePal_3.add(removeLab3);
-        removePal_3.add(removeField3);
-        removePal_4.add(removeLab4);
-        removePal_4.add(removeField4);
-        removePal.add(removePal_1);
-        removePal.add(removePal_2);
-        removePal.add(removePal_3);
-        removePal.add(removePal_4);
-
-        mRemoveConfirmBtn = new JButton("确认删除");
-        mRemoveConfirmBtn.addActionListener(this);
-        mRemoveConfirmBtn.setFont(new ToolFont());
-        JPanel confirmPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        confirmPanel.add(mRemoveConfirmBtn);
-        removePal.add(confirmPanel);
-
-        //insert panel
-        JLabel insertLab1 = new JLabel("开始表序号（1、2、3...）：");
-        JLabel insertLab2 = new JLabel("结束表序号（1、2、3...）：");
-        JLabel insertLab3 = new JLabel("开始插入行序号(1、2、3...)：");
-        JLabel insertLab4 = new JLabel("要插入多少行：");
-        insertLab1.setFont(new ToolFont());
-        insertLab2.setFont(new ToolFont());
-        insertLab3.setFont(new ToolFont());
-        insertLab4.setFont(new ToolFont());
-        insertField1 = new JTextField(15);
-        insertField2 = new JTextField(15);
-        insertField3 = new JTextField(15);
-        insertField4 = new JTextField(15);
-        JPanel insertPal_1 = new JPanel();
-        JPanel insertPal_2 = new JPanel();
-        JPanel insertPal_3 = new JPanel();
-        JPanel insertPal_4 = new JPanel();
-        insertPal_1.add(insertLab1);
-        insertPal_1.add(insertField1);
-        insertPal_2.add(insertLab2);
-        insertPal_2.add(insertField2);
-        insertPal_3.add(insertLab3);
-        insertPal_3.add(insertField3);
-        insertPal_4.add(insertLab4);
-        insertPal_4.add(insertField4);
-        insertPal.add(insertPal_1);
-        insertPal.add(insertPal_2);
-        insertPal.add(insertPal_3);
-        insertPal.add(insertPal_4);
-
-        mInsertConfirmBtn = new JButton("确认插入");
-        mInsertConfirmBtn.setFont(new ToolFont());
-        mInsertConfirmBtn.addActionListener(this);
-        JPanel insertPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        insertPanel.add(mInsertConfirmBtn);
-        insertPal.add(insertPanel);
-
-        //copy cell panel
-        JLabel cpCellLab1 = new JLabel("开始表序号（1、2、3...）：");
-        JLabel cpCellLab2 = new JLabel("结束表序号（1、2、3...）：");
-        JLabel cpCellLab3 = new JLabel("读取单元格列序号(1、2、3...)：");
-        JLabel cpCellLab4 = new JLabel("读取单元格行序号(1、2、3...)：");
-        JLabel cpCellLab5 = new JLabel("写入单元格列序号(1、2、3...)：");
-        JLabel cpCellLab6 = new JLabel("写入单元格行序号(1、2、3...)：");
-        JLabel cpCellLab7 = new JLabel("写入多少行（1、2、3...）：");
-        cpCellLab1.setFont(new ToolFont());
-        cpCellLab2.setFont(new ToolFont());
-        cpCellLab3.setFont(new ToolFont());
-        cpCellLab4.setFont(new ToolFont());
-        cpCellLab5.setFont(new ToolFont());
-        cpCellLab6.setFont(new ToolFont());
-        cpCellLab7.setFont(new ToolFont());
-        cpCellField1 = new JTextField(15);
-        cpCellField2 = new JTextField(15);
-        cpCellField3 = new JTextField(15);
-        cpCellField4 = new JTextField(15);
-        cpCellField5 = new JTextField(15);
-        cpCellField6 = new JTextField(15);
-        cpCellField7 = new JTextField(15);
-        JPanel cpCellPal_1 = new JPanel();
-        JPanel cpCellPal_2 = new JPanel();
-        JPanel cpCellPal_3 = new JPanel();
-        JPanel cpCellPal_4 = new JPanel();
-        JPanel cpCellPal_5 = new JPanel();
-        JPanel cpCellPal_6 = new JPanel();
-        JPanel cpCellPal_7 = new JPanel();
-        cpCellPal_1.add(cpCellLab1);
-        cpCellPal_1.add(cpCellField1);
-        cpCellPal_2.add(cpCellLab2);
-        cpCellPal_2.add(cpCellField2);
-        cpCellPal_3.add(cpCellLab3);
-        cpCellPal_3.add(cpCellField3);
-        cpCellPal_4.add(cpCellLab4);
-        cpCellPal_4.add(cpCellField4);
-        cpCellPal_5.add(cpCellLab5);
-        cpCellPal_5.add(cpCellField5);
-        cpCellPal_6.add(cpCellLab6);
-        cpCellPal_6.add(cpCellField6);
-        cpCellPal_7.add(cpCellLab7);
-        cpCellPal_7.add(cpCellField7);
-        cpCellPal.add(cpCellPal_1);
-        cpCellPal.add(cpCellPal_2);
-        cpCellPal.add(cpCellPal_3);
-        cpCellPal.add(cpCellPal_4);
-        cpCellPal.add(cpCellPal_5);
-        cpCellPal.add(cpCellPal_6);
-        cpCellPal.add(cpCellPal_7);
-
-        mCpCellConfirmBtn = new JButton("确认复制单元格");
-        mCpCellConfirmBtn.setFont(new ToolFont());
-        mCpCellConfirmBtn.addActionListener(this);
-        JPanel cpCellPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        cpCellPanel.add(mCpCellConfirmBtn);
-        cpCellPal.add(cpCellPanel);
-
-        //copy col panel
-        JLabel cpColLab1 = new JLabel("读取表序号（1、2、3...）：");
-        JLabel cpColLab2 = new JLabel("开始写入表序号（1、2、3...）：");
-        JLabel cpColLab3 = new JLabel("结束写入表序号(1、2、3...)：");
-        JLabel cpColLab4 = new JLabel("读取列序号(1、2、3...)：");
-        JLabel cpColLab5 = new JLabel("写入列序号(1、2、3...)：");
-        cpColLab1.setFont(new ToolFont());
-        cpColLab2.setFont(new ToolFont());
-        cpColLab3.setFont(new ToolFont());
-        cpColLab4.setFont(new ToolFont());
-        cpColLab5.setFont(new ToolFont());
-        cpColField1 = new JTextField(15);
-        cpColField2 = new JTextField(15);
-        cpColField3 = new JTextField(15);
-        cpColField4 = new JTextField(15);
-        cpColField5 = new JTextField(15);
-        JPanel cpColPal_1 = new JPanel();
-        JPanel cpColPal_2 = new JPanel();
-        JPanel cpColPal_3 = new JPanel();
-        JPanel cpColPal_4 = new JPanel();
-        JPanel cpColPal_5 = new JPanel();
-        cpColPal_1.add(cpColLab1);
-        cpColPal_1.add(cpColField1);
-        cpColPal_2.add(cpColLab2);
-        cpColPal_2.add(cpColField2);
-        cpColPal_3.add(cpColLab3);
-        cpColPal_3.add(cpColField3);
-        cpColPal_4.add(cpColLab4);
-        cpColPal_4.add(cpColField4);
-        cpColPal_5.add(cpColLab5);
-        cpColPal_5.add(cpColField5);
-        cpColPal.add(cpColPal_1);
-        cpColPal.add(cpColPal_2);
-        cpColPal.add(cpColPal_3);
-        cpColPal.add(cpColPal_4);
-        cpColPal.add(cpColPal_5);
-
-        mCpColConfirmBtn = new JButton("确认复制列");
-        mCpColConfirmBtn.setFont(new ToolFont());
-        mCpColConfirmBtn.addActionListener(this);
-        JPanel cpColPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        cpColPanel.add(mCpColConfirmBtn);
-        cpColPal.add(cpColPanel);
-
-        panel_3_1.add(excelLab);
-        panel_3_2.add(mRemoveBtn);
-        panel_3_2.add(mInsertBtn);
-        panel_3_2.add(mCopyCellBtn);
-        panel_3_2.add(mCopyColAToColBBtn);
-
-        mIndexCardPanel.add("defaultcard", new JLabel());
-        mIndexCardPanel.add("card1", removePal);
-        mIndexCardPanel.add("card2", insertPal);
-        mIndexCardPanel.add("card3", cpCellPal);
-        mIndexCardPanel.add("card4", cpColPal);
-
-        mInfoPanel = new JPanel(new BorderLayout());
-        mInfoLab = new JLabel();
-        mInfoLab.setFont(new ToolFont());
-        mInfoPanel.add(mInfoLab);
-
-        JPanel panel = new JPanel();
-        panel.add(panel_3_1);
-        panel.add(panel_3_2);
-        mExcelPanel.add(panel, BorderLayout.NORTH);
-        mExcelPanel.add(mIndexCardPanel, BorderLayout.CENTER);
-        mExcelPanel.add(mInfoPanel, BorderLayout.SOUTH);
-    }
-
     private void initTransformPanel() {
         //init transform Excel to XML file panel
         mExcel2XMLPanel = new JPanel(new GridLayout(3, 5));
@@ -747,16 +805,20 @@ public class ToolFrame extends JFrame implements ActionListener, ItemListener {
         mLogArea.setFont(new DefaultFont());
         mLogArea.append("this is a log area");
         mLogScrollPane = new JScrollPane(mLogArea);
+
+        mLogScrollPane.setBounds(150, 400, 850, 450);
+        mChooseExcelPanel.add(mLogScrollPane);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         String btn = e.getActionCommand();
         if (btn.equals("选择Excel文件")) {
-            System.out.println("choose Excel file");
             mFileChooser = new FileChooser();
             FILEPATH = mFileChooser.getFilepath();
-            showLog(FILEPATH);
+            if (!mFileChooser.getFilepath().equals("")) {
+                mChooseExcelLab.setText("文件路径：" + mFileChooser.getFilepath());
+            }
         } else if (btn.equals("删除行数")) {
             mOperationsCard.show(mIndexCardPanel, "card1");
             mInfoLab.setText("删除行数说明：删除连续整行。比如：填入参数 1  10  2  5。意思是将表1到表10的第2行到第5行都删除");
@@ -1117,9 +1179,9 @@ public class ToolFrame extends JFrame implements ActionListener, ItemListener {
         public void actionPerformed(ActionEvent e) {
             String menu = e.getActionCommand();
             if ("处理Excel".equals(menu)) {
-                System.out.println("hello");
+                mMainCard.show(mMainPanel, EXCEL_OPERATIONS_PANEL);
             } else if ("转Excel为XML文件".equals(menu)) {
-                System.out.println("world");
+                mMainCard.show(mMainPanel, EXCEL_TRANSFORM_PANEL);
             }
         }
     }
