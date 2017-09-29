@@ -102,7 +102,6 @@ public class ToolFrame extends JFrame implements ActionListener, ItemListener {
     private JButton mInsertBtn;
     private JButton mCopyCellBtn;
     private JButton mCopyColAToColBBtn;
-    private JLabel mInfoLab;
     private JPanel removePal;
     private JPanel insertPal;
     private JPanel cpCellPal;
@@ -480,11 +479,6 @@ public class ToolFrame extends JFrame implements ActionListener, ItemListener {
         mIndexCardPanel.add("card2", insertPal);
         mIndexCardPanel.add("card3", cpCellPal);
         mIndexCardPanel.add("card4", cpColPal);
-
-        mInfoPanel = new JPanel(new BorderLayout());
-        mInfoLab = new JLabel();
-        mInfoLab.setFont(new ToolFont());
-        mInfoPanel.add(mInfoLab);
     }
 
     private void initChooseCountryPanel() {
@@ -827,18 +821,12 @@ public class ToolFrame extends JFrame implements ActionListener, ItemListener {
             }
         } else if (btn.equals("删除行数")) {
             mOperationsCard.show(mIndexCardPanel, "card1");
-            mInfoLab.setText("删除行数说明：删除连续整行。比如：填入参数 1  10  2  5。意思是将表1到表10的第2行到第5行都删除");
         } else if (btn.equals("插入行数")) {
             mOperationsCard.show(mIndexCardPanel, "card2");
-            mInfoLab.setText("插入行数说明：插入连续整行。比如：填入参数 1  10  2  3。意思是将表1到表10的从2行开始插入3行");
         } else if (btn.equals("复制单元格")) {
             mOperationsCard.show(mIndexCardPanel, "card3");
-            mInfoLab.setText("复制单元格说明：读取每个表中指定单元格，然后写入每个表中指定的多个位置。\n");
         } else if (btn.equals("复制列")) {
             mOperationsCard.show(mIndexCardPanel, "card4");
-            mInfoLab.setText("复制列说明：将表readSheetIndex的readColume列数据" +
-                    "，复制到beginSheetIndex表到endSheetIndex的writeColume" +
-                    "列中。\n比如：填入参数 1  2  10 3 3。意思是读取表1第3列的数据然后将第3列数据复制到表2到表10的第3列中");
         } else if ("确认删除".equals(btn)) {
             int beginSheetIndex = 0;
             int endSheetIndex = 0;
