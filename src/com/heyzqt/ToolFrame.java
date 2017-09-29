@@ -149,6 +149,7 @@ public class ToolFrame extends JFrame implements ActionListener, ItemListener {
      */
     private JScrollPane mLogScrollPane;
     public static JTextArea mLogArea;
+    private JButton clearLogBtn;
 
     private FileChooser mFileChooser;
 
@@ -185,24 +186,8 @@ public class ToolFrame extends JFrame implements ActionListener, ItemListener {
 
         initLogPanel();
 
-        JPanel panel_1 = new JPanel(new BorderLayout());
-        panel_1.add(mChooseExcelPanel, BorderLayout.WEST);
-        panel_1.add(mChooseCountryPanel, BorderLayout.CENTER);
-        //mMainPanel.add(panel_1);
-        //mMainPanel.add(mExcelPanel);
-        //mMainPanel.add(mExcel2XMLPanel);
-//        JPanel panel4_1 = new JPanel(new BorderLayout());
-//        JButton clearLogBtn = new JButton("clear log");
-//        clearLogBtn.setFont(new ToolFont());
-//        clearLogBtn.addActionListener(this);
-//        panel4_1.add(mLogScrollPane, BorderLayout.CENTER);
-//        JPanel temp = new JPanel(new FlowLayout());
-//        temp.add(clearLogBtn);
-//        panel4_1.add(temp, BorderLayout.SOUTH);
-        //mMainPanel.add(panel4_1);
-
         mFrame.setJMenuBar(menubar);
-        //mMainPanel.add(DEFAULT_PANEL, defaultPanel);
+        mMainPanel.add(DEFAULT_PANEL, defaultPanel);
         mMainPanel.add(EXCEL_OPERATIONS_PANEL, mChooseExcelPanel);
         mMainPanel.add(EXCEL_TRANSFORM_PANEL, mExcel2XMLPanel);
         mFrame.setSize(1280, 960);
@@ -286,14 +271,12 @@ public class ToolFrame extends JFrame implements ActionListener, ItemListener {
         // input the paramaters
         mOperationsCard = new CardLayout();
         mIndexCardPanel = new JPanel(mOperationsCard);
-        mIndexCardPanel.setBackground(Color.YELLOW);
-        mIndexCardPanel.setBounds(150, 170, 850, 200);
+        mIndexCardPanel.setBounds(150, 170, 850, 190);
         removePal = new JPanel(null);
         insertPal = new JPanel(null);
         cpCellPal = new JPanel(null);
         cpColPal = new JPanel(null);
         mChooseExcelPanel.add(mIndexCardPanel);
-        removePal.setBackground(Color.green);
 
         // remove panel
         JLabel removeLab1 = new JLabel("开始表序号（1、2、3...）：");
@@ -435,7 +418,6 @@ public class ToolFrame extends JFrame implements ActionListener, ItemListener {
         cpCellPal.add(cpCellField6);
         cpCellPal.add(cpCellLab7);
         cpCellPal.add(cpCellField7);
-        cpCellPal.setBackground(Color.red);
 
         mCpCellConfirmBtn = new JButton("确认复制单元格");
         mCpCellConfirmBtn.setFont(new ToolFont());
@@ -503,22 +485,22 @@ public class ToolFrame extends JFrame implements ActionListener, ItemListener {
         mInfoLab = new JLabel();
         mInfoLab.setFont(new ToolFont());
         mInfoPanel.add(mInfoLab);
-//        JPanel panel = new JPanel();
-//        panel.add(panel_3_1);
-//        panel.add(panel_3_2);
-//        mExcelPanel.add(panel, BorderLayout.NORTH);
-//        mExcelPanel.add(mIndexCardPanel, BorderLayout.CENTER);
-//        mExcelPanel.add(mInfoPanel, BorderLayout.SOUTH);
     }
 
     private void initChooseCountryPanel() {
         //init choose country panel
-        mChooseCountryPanel = new JPanel(new BorderLayout());
-        JPanel panel_2_1 = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        JPanel panel_2_2 = new JPanel(new GridLayout(6, 10));
+        mChooseCountryPanel = new JPanel(new GridLayout(6, 10));
+        mExcel2XMLPanel = new JPanel(null);
+        mExcel2XMLPanel.add(mChooseExcelLab);
+        mExcel2XMLPanel.add(mChooseExcelBtn);
+
         JLabel countryLab = new JLabel("请选择国家：");
         countryLab.setFont(new ToolFont());
-        panel_2_1.add(countryLab);
+        countryLab.setBounds(Constant.PANEL_START_POSITION, 100, 200, Constant.LABEL_HEIGHT);
+        mChooseCountryPanel.setBounds(Constant.PANEL_START_POSITION, 130, Constant.PANEL_WIDTH, 200);
+        mExcel2XMLPanel.add(countryLab);
+        mExcel2XMLPanel.add(mChooseCountryPanel);
+
         checkBox1AR = new JCheckBox("ar");
         checkBox2BG_rBG = new JCheckBox("bg-rBG");
         checkBox3CA = new JCheckBox("ca");
@@ -660,61 +642,58 @@ public class ToolFrame extends JFrame implements ActionListener, ItemListener {
         checkBox45ZH_rHK.addItemListener(this);
         checkBox46ZH_rTW.addItemListener(this);
 
-        panel_2_2.add(checkBox1AR);
-        panel_2_2.add(checkBox2BG_rBG);
-        panel_2_2.add(checkBox3CA);
-        panel_2_2.add(checkBox4CS);
-        panel_2_2.add(checkBox5CY);
-        panel_2_2.add(checkBox6DA);
-        panel_2_2.add(checkBox7DE);
-        panel_2_2.add(checkBox8EL_rGR);
-        panel_2_2.add(checkBox9ES);
-        panel_2_2.add(checkBox10ES_rPR);
-        panel_2_2.add(checkBox11ET);
-        panel_2_2.add(checkBox12EU);
-        panel_2_2.add(checkBox13FA_rIR);
-        panel_2_2.add(checkBox14FI);
-        panel_2_2.add(checkBox15FR);
-        panel_2_2.add(checkBox16GD);
-        panel_2_2.add(checkBox17GL);
-        panel_2_2.add(checkBox18HR);
-        panel_2_2.add(checkBox19HU);
-        panel_2_2.add(checkBox20IN_rID);
-        panel_2_2.add(checkBox21IT);
-        panel_2_2.add(checkBox22IW_rIL);
-        panel_2_2.add(checkBox23KK_rKZ);
-        panel_2_2.add(checkBox24MN_rMN);
-        panel_2_2.add(checkBox25MS_rMY);
-        panel_2_2.add(checkBox26MY_rMM);
-        panel_2_2.add(checkBox27NB);
-        panel_2_2.add(checkBox28NL);
-        panel_2_2.add(checkBox29PL);
-        panel_2_2.add(checkBox30PT);
-        panel_2_2.add(checkBox31RO);
-        panel_2_2.add(checkBox32RU);
-        panel_2_2.add(checkBox33SK);
-        panel_2_2.add(checkBox34SL);
-        panel_2_2.add(checkBox35SQ_rAL);
-        panel_2_2.add(checkBox36SR);
-        panel_2_2.add(checkBox37SV);
-        panel_2_2.add(checkBox38SW_rTZ);
-        panel_2_2.add(checkBox39TA_rIN);
-        panel_2_2.add(checkBox40TH);
-        panel_2_2.add(checkBox41TR);
-        panel_2_2.add(checkBox42UK_rUA);
-        panel_2_2.add(checkBox43VI_rVN);
-        panel_2_2.add(checkBox44ZH_rCN);
-        panel_2_2.add(checkBox45ZH_rHK);
-        panel_2_2.add(checkBox46ZH_rTW);
-
-        mChooseCountryPanel.add(panel_2_1, BorderLayout.NORTH);
-        mChooseCountryPanel.add(panel_2_2, BorderLayout.CENTER);
+        mChooseCountryPanel.add(checkBox1AR);
+        mChooseCountryPanel.add(checkBox2BG_rBG);
+        mChooseCountryPanel.add(checkBox3CA);
+        mChooseCountryPanel.add(checkBox4CS);
+        mChooseCountryPanel.add(checkBox5CY);
+        mChooseCountryPanel.add(checkBox6DA);
+        mChooseCountryPanel.add(checkBox7DE);
+        mChooseCountryPanel.add(checkBox8EL_rGR);
+        mChooseCountryPanel.add(checkBox9ES);
+        mChooseCountryPanel.add(checkBox10ES_rPR);
+        mChooseCountryPanel.add(checkBox11ET);
+        mChooseCountryPanel.add(checkBox12EU);
+        mChooseCountryPanel.add(checkBox13FA_rIR);
+        mChooseCountryPanel.add(checkBox14FI);
+        mChooseCountryPanel.add(checkBox15FR);
+        mChooseCountryPanel.add(checkBox16GD);
+        mChooseCountryPanel.add(checkBox17GL);
+        mChooseCountryPanel.add(checkBox18HR);
+        mChooseCountryPanel.add(checkBox19HU);
+        mChooseCountryPanel.add(checkBox20IN_rID);
+        mChooseCountryPanel.add(checkBox21IT);
+        mChooseCountryPanel.add(checkBox22IW_rIL);
+        mChooseCountryPanel.add(checkBox23KK_rKZ);
+        mChooseCountryPanel.add(checkBox24MN_rMN);
+        mChooseCountryPanel.add(checkBox25MS_rMY);
+        mChooseCountryPanel.add(checkBox26MY_rMM);
+        mChooseCountryPanel.add(checkBox27NB);
+        mChooseCountryPanel.add(checkBox28NL);
+        mChooseCountryPanel.add(checkBox29PL);
+        mChooseCountryPanel.add(checkBox30PT);
+        mChooseCountryPanel.add(checkBox31RO);
+        mChooseCountryPanel.add(checkBox32RU);
+        mChooseCountryPanel.add(checkBox33SK);
+        mChooseCountryPanel.add(checkBox34SL);
+        mChooseCountryPanel.add(checkBox35SQ_rAL);
+        mChooseCountryPanel.add(checkBox36SR);
+        mChooseCountryPanel.add(checkBox37SV);
+        mChooseCountryPanel.add(checkBox38SW_rTZ);
+        mChooseCountryPanel.add(checkBox39TA_rIN);
+        mChooseCountryPanel.add(checkBox40TH);
+        mChooseCountryPanel.add(checkBox41TR);
+        mChooseCountryPanel.add(checkBox42UK_rUA);
+        mChooseCountryPanel.add(checkBox43VI_rVN);
+        mChooseCountryPanel.add(checkBox44ZH_rCN);
+        mChooseCountryPanel.add(checkBox45ZH_rHK);
+        mChooseCountryPanel.add(checkBox46ZH_rTW);
     }
 
     private void initTransformPanel() {
         //init transform Excel to XML file panel
-        mExcel2XMLPanel = new JPanel(new GridLayout(3, 5));
-        JLabel label = new JLabel("将Excel文件转换为XML文件（不支持array类型）：");
+        JLabel label = new JLabel("<html>选择要转换的XML文件类型<br>&nbsp;&nbsp;&nbsp;（不支持array类型）：</html>");
+        label.setBounds(Constant.PANEL_START_POSITION, 370, 250, 50);
         label.setFont(new ToolFont());
         mExcel2XMLPanel.add(label);
 
@@ -742,7 +721,6 @@ public class ToolFrame extends JFrame implements ActionListener, ItemListener {
         mmp_stringsBtn.addItemListener(new RadioButtonListener());
         thr_menu_stringsBtn.addItemListener(new RadioButtonListener());
         timeshift_stringsBtn.addItemListener(new RadioButtonListener());
-
         fileTypeGroup.add(stringsBtn);
         fileTypeGroup.add(menu_stringsBtn);
         fileTypeGroup.add(nav_stringsBtn);
@@ -750,53 +728,67 @@ public class ToolFrame extends JFrame implements ActionListener, ItemListener {
         fileTypeGroup.add(mmp_stringsBtn);
         fileTypeGroup.add(thr_menu_stringsBtn);
         fileTypeGroup.add(timeshift_stringsBtn);
+
+        stringsBtn.setBounds(Constant.PANEL_START_POSITION + 240, 340,
+                120, Constant.RADIO_BUTTON_HEIGHT);
+        menu_stringsBtn.setBounds(Constant.PANEL_START_POSITION + 400, 340,
+                190, Constant.RADIO_BUTTON_HEIGHT);
+        nav_stringsBtn.setBounds(Constant.PANEL_START_POSITION + 620, 340,
+                190, Constant.RADIO_BUTTON_HEIGHT);
+        timeshift_stringsBtn.setBounds(Constant.PANEL_START_POSITION + 240, 375,
+                220, Constant.RADIO_BUTTON_HEIGHT);
+        thr_menu_stringsBtn.setBounds(Constant.PANEL_START_POSITION + 480, 375,
+                250, Constant.RADIO_BUTTON_HEIGHT);
+        mmp_stringsBtn.setBounds(Constant.PANEL_START_POSITION + 240, 410,
+                190, Constant.RADIO_BUTTON_HEIGHT);
+        cec_stringsBtn.setBounds(Constant.PANEL_START_POSITION + 480, 410,
+                190, Constant.RADIO_BUTTON_HEIGHT);
         mExcel2XMLPanel.add(stringsBtn);
         mExcel2XMLPanel.add(menu_stringsBtn);
         mExcel2XMLPanel.add(nav_stringsBtn);
-        mExcel2XMLPanel.add(cec_stringsBtn);
-        mExcel2XMLPanel.add(mmp_stringsBtn);
-        mExcel2XMLPanel.add(thr_menu_stringsBtn);
         mExcel2XMLPanel.add(timeshift_stringsBtn);
+        mExcel2XMLPanel.add(thr_menu_stringsBtn);
+        mExcel2XMLPanel.add(mmp_stringsBtn);
+        mExcel2XMLPanel.add(cec_stringsBtn);
 
-        JLabel transformLab3 = new JLabel("key值列数序号(1、2、3...)：");
-        JLabel transformLab4 = new JLabel("value值列数序号(1、2、3...)：");
-        JLabel transformLab5 = new JLabel("开始写入行序号(1、2、3...)：");
-        JLabel transformLab6 = new JLabel("结束写入行序号(1、2、3...)：");
+        JLabel jLabel = new JLabel("填写操作参数：");
+        jLabel.setFont(new ToolFont());
+        jLabel.setBounds(Constant.PANEL_START_POSITION, 460, 130, 20);
+        JLabel transformLab3 = new JLabel("<html>key值列数序号<br>(1、2、3...)：</html>");
+        JLabel transformLab4 = new JLabel("<html>value值列数序号<br>(1、2、3...)：</html>");
+        JLabel transformLab5 = new JLabel("<html>开始写入行序号<br>(1、2、3...)：</html>");
+        JLabel transformLab6 = new JLabel("<html>结束写入行序号<br>(1、2、3...)：</html>");
         transformLab3.setFont(new ToolFont());
         transformLab4.setFont(new ToolFont());
         transformLab5.setFont(new ToolFont());
         transformLab6.setFont(new ToolFont());
-        transformField3 = new JTextField(15);
-        transformField4 = new JTextField(15);
-        transformField5 = new JTextField(15);
-        transformField6 = new JTextField(15);
-        JPanel transformPal_1 = new JPanel();
-        JPanel transformPal_2 = new JPanel();
-        JPanel transformPal_3 = new JPanel();
-        JPanel transformPal_4 = new JPanel();
-        JPanel transformPal_5 = new JPanel();
-        JPanel transformPal_6 = new JPanel();
-        transformPal_3.add(transformLab3);
-        transformPal_3.add(transformField3);
-        transformPal_4.add(transformLab4);
-        transformPal_4.add(transformField4);
-        transformPal_5.add(transformLab5);
-        transformPal_5.add(transformField5);
-        transformPal_6.add(transformLab6);
-        transformPal_6.add(transformField6);
-        mExcel2XMLPanel.add(transformPal_1);
-        mExcel2XMLPanel.add(transformPal_2);
-        mExcel2XMLPanel.add(transformPal_3);
-        mExcel2XMLPanel.add(transformPal_4);
-        mExcel2XMLPanel.add(transformPal_5);
-        mExcel2XMLPanel.add(transformPal_6);
+        transformField3 = new JTextField(5);
+        transformField4 = new JTextField(5);
+        transformField5 = new JTextField(5);
+        transformField6 = new JTextField(5);
+        transformLab3.setBounds(Constant.PANEL_START_POSITION + 150, 460, 260, 40);
+        transformField3.setBounds(Constant.PANEL_START_POSITION + 280, 470, 100, 30);
+        transformLab4.setBounds(Constant.PANEL_START_POSITION + 420, 460, 260, 40);
+        transformField4.setBounds(Constant.PANEL_START_POSITION + 560, 470, 100, 30);
+        transformLab5.setBounds(Constant.PANEL_START_POSITION + 150, 520, 260, 40);
+        transformField5.setBounds(Constant.PANEL_START_POSITION + 280, 530, 100, 30);
+        transformLab6.setBounds(Constant.PANEL_START_POSITION + 420, 520, 260, 40);
+        transformField6.setBounds(Constant.PANEL_START_POSITION + 560, 530, 100, 30);
+        mExcel2XMLPanel.add(jLabel);
+        mExcel2XMLPanel.add(transformLab3);
+        mExcel2XMLPanel.add(transformField3);
+        mExcel2XMLPanel.add(transformLab4);
+        mExcel2XMLPanel.add(transformField4);
+        mExcel2XMLPanel.add(transformLab5);
+        mExcel2XMLPanel.add(transformField5);
+        mExcel2XMLPanel.add(transformLab6);
+        mExcel2XMLPanel.add(transformField6);
 
         JButton transConfirmBtn = new JButton("开始转换");
         transConfirmBtn.setFont(new ToolFont());
         transConfirmBtn.addActionListener(this);
-        JPanel confirmPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        confirmPanel.add(transConfirmBtn);
-        mExcel2XMLPanel.add(confirmPanel);
+        transConfirmBtn.setBounds(Constant.PANEL_START_POSITION + 690, 490, 120, Constant.BUTTON_HEIGHT);
+        mExcel2XMLPanel.add(transConfirmBtn);
     }
 
     private void initLogPanel() {
@@ -806,8 +798,22 @@ public class ToolFrame extends JFrame implements ActionListener, ItemListener {
         mLogArea.append("this is a log area");
         mLogScrollPane = new JScrollPane(mLogArea);
 
-        mLogScrollPane.setBounds(150, 400, 850, 450);
+        clearLogBtn = new JButton("clear log");
+        clearLogBtn.setFont(new ToolFont());
+        clearLogBtn.addActionListener(this);
+        clearLogBtn.setBounds(850, 830, 150, Constant.BUTTON_HEIGHT);
+    }
+
+    private void setOperationsLogPalPosition() {
+        mLogScrollPane.setBounds(150, 370, 850, 450);
+        mChooseExcelPanel.add(clearLogBtn);
         mChooseExcelPanel.add(mLogScrollPane);
+    }
+
+    private void setTransformLogPalPosition() {
+        mLogScrollPane.setBounds(150, 570, 850, 250);
+        mExcel2XMLPanel.add(clearLogBtn);
+        mExcel2XMLPanel.add(mLogScrollPane);
     }
 
     @Override
@@ -1180,8 +1186,10 @@ public class ToolFrame extends JFrame implements ActionListener, ItemListener {
             String menu = e.getActionCommand();
             if ("处理Excel".equals(menu)) {
                 mMainCard.show(mMainPanel, EXCEL_OPERATIONS_PANEL);
+                setOperationsLogPalPosition();
             } else if ("转Excel为XML文件".equals(menu)) {
                 mMainCard.show(mMainPanel, EXCEL_TRANSFORM_PANEL);
+                setTransformLogPalPosition();
             }
         }
     }
