@@ -15,14 +15,14 @@ import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
 
 import java.io.*;
-import java.util.Arrays;
 import java.util.Iterator;
 
 public class Main {
 
     public final static String FILENAME = "E:\\translate.xls";
 
-    public final static String XMLPATH = "origin_keys/";
+    //public final static String XMLPATH = "origin_keys/";
+    public final static String XMLPATH = "E:\\origin_keys\\";
 
     private final static String STANDARDNAME = "menu_arrays_";
 
@@ -58,9 +58,10 @@ public class Main {
 //                , 3, 2, 2, 2);
     }
 
-    public static String[] createFileNames(String filetype, String[] countries, int length) {
+    public static String[] createFileNames(String filetype, String[] countries) {
+        int length = countries.length;
         String[] result = new String[length];
-        String filehead = "";
+        String filehead;
         switch (filetype) {
             case Constant.FILE_STRINGS:
                 filehead = "strings_";
@@ -298,7 +299,8 @@ public class Main {
             //find values
             int index = 0;
             for (int i = beginSheetIndex; i <= endSheetIndex; i++) {
-                System.out.println("i = " + i + " sheet name = " + sheets[i].getName());
+                //System.out.println("i = " + i + " sheet name = " + sheets[i].getName());
+                //ToolFrame.showLog("i = " + i + " sheet name = " + sheets[i].getName());
                 int row_index = 0;
                 for (int j = beginRowIndex; j <= endRowIndex; j++) {
 //                    System.out.println("row " + (j + 1) + " : " + sheets[i].getCell(keyColumnIndex, j)
@@ -322,11 +324,14 @@ public class Main {
             ToolFrame.showLog("transform end");
 
             System.out.println("二维数组：");
+            ToolFrame.showLog("二维数组：");
             for (int i = 0; i < keys_values.length; i++) {
                 for (int j = 0; j < keys_values[0].length; j++) {
                     System.out.print(keys_values[i][j] + ",");
+                    ToolFrame.showLogInfo(keys_values[i][j] + ",");
                 }
                 System.out.println();
+                ToolFrame.showLog("");
             }
 
 
@@ -334,6 +339,7 @@ public class Main {
             int length = endSheetIndex - beginSheetIndex + 1;
             int lines = endRowIndex - beginRowIndex + 1;
             System.out.println("要修改的行数 lines = " + lines);
+            ToolFrame.showLog("要修改的行数 lines = " + lines);
             for (int i = 0; i < length; i++) {
                 String[] values = new String[lines];
                 for (int j = 0; j < lines; j++) {
@@ -527,6 +533,7 @@ public class Main {
             }
         } else {
             System.out.println("error!!! please remove all the xml files!");
+            ToolFrame.showLog("error!!! please remove all the xml files!");
             isFileExisted = true;
             return;
         }

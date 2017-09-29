@@ -3,6 +3,10 @@ package com.heyzqt;
 import com.widget.DefaultFont;
 import com.widget.FileChooser;
 import com.widget.ToolFont;
+import jxl.Sheet;
+import jxl.Workbook;
+import jxl.WorkbookSettings;
+import jxl.read.biff.BiffException;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,6 +14,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.io.*;
 import java.util.Arrays;
 
 /**
@@ -44,53 +49,53 @@ public class ToolFrame extends JFrame implements ActionListener, ItemListener {
     /**
      * choose country panel
      */
-    private JPanel mChooseCountryPanel;
-    private JCheckBox checkBox1AR;
-    private JCheckBox checkBox2BG_rBG;
-    private JCheckBox checkBox3CA;
-    private JCheckBox checkBox4CS;
-    private JCheckBox checkBox5CY;
-    private JCheckBox checkBox6DA;
-    private JCheckBox checkBox7DE;
-    private JCheckBox checkBox8EL_rGR;
-    private JCheckBox checkBox9ES;
-    private JCheckBox checkBox10ES_rPR;
-    private JCheckBox checkBox11ET;
-    private JCheckBox checkBox12EU;
-    private JCheckBox checkBox13FA_rIR;
-    private JCheckBox checkBox14FI;
-    private JCheckBox checkBox15FR;
-    private JCheckBox checkBox16GD;
-    private JCheckBox checkBox17GL;
-    private JCheckBox checkBox18HR;
-    private JCheckBox checkBox19HU;
-    private JCheckBox checkBox20IN_rID;
-    private JCheckBox checkBox21IT;
-    private JCheckBox checkBox22IW_rIL;
-    private JCheckBox checkBox23KK_rKZ;
-    private JCheckBox checkBox24MN_rMN;
-    private JCheckBox checkBox25MS_rMY;
-    private JCheckBox checkBox26MY_rMM;
-    private JCheckBox checkBox27NB;
-    private JCheckBox checkBox28NL;
-    private JCheckBox checkBox29PL;
-    private JCheckBox checkBox30PT;
-    private JCheckBox checkBox31RO;
-    private JCheckBox checkBox32RU;
-    private JCheckBox checkBox33SK;
-    private JCheckBox checkBox34SL;
-    private JCheckBox checkBox35SQ_rAL;
-    private JCheckBox checkBox36SR;
-    private JCheckBox checkBox37SV;
-    private JCheckBox checkBox38SW_rTZ;
-    private JCheckBox checkBox39TA_rIN;
-    private JCheckBox checkBox40TH;
-    private JCheckBox checkBox41TR;
-    private JCheckBox checkBox42UK_rUA;
-    private JCheckBox checkBox43VI_rVN;
-    private JCheckBox checkBox44ZH_rCN;
-    private JCheckBox checkBox45ZH_rHK;
-    private JCheckBox checkBox46ZH_rTW;
+//    private JPanel mChooseCountryPanel;
+//    private JCheckBox checkBox1AR;
+//    private JCheckBox checkBox2BG_rBG;
+//    private JCheckBox checkBox3CA;
+//    private JCheckBox checkBox4CS;
+//    private JCheckBox checkBox5CY;
+//    private JCheckBox checkBox6DA;
+//    private JCheckBox checkBox7DE;
+//    private JCheckBox checkBox8EL_rGR;
+//    private JCheckBox checkBox9ES;
+//    private JCheckBox checkBox10ES_rPR;
+//    private JCheckBox checkBox11ET;
+//    private JCheckBox checkBox12EU;
+//    private JCheckBox checkBox13FA_rIR;
+//    private JCheckBox checkBox14FI;
+//    private JCheckBox checkBox15FR;
+//    private JCheckBox checkBox16GD;
+//    private JCheckBox checkBox17GL;
+//    private JCheckBox checkBox18HR;
+//    private JCheckBox checkBox19HU;
+//    private JCheckBox checkBox20IN_rID;
+//    private JCheckBox checkBox21IT;
+//    private JCheckBox checkBox22IW_rIL;
+//    private JCheckBox checkBox23KK_rKZ;
+//    private JCheckBox checkBox24MN_rMN;
+//    private JCheckBox checkBox25MS_rMY;
+//    private JCheckBox checkBox26MY_rMM;
+//    private JCheckBox checkBox27NB;
+//    private JCheckBox checkBox28NL;
+//    private JCheckBox checkBox29PL;
+//    private JCheckBox checkBox30PT;
+//    private JCheckBox checkBox31RO;
+//    private JCheckBox checkBox32RU;
+//    private JCheckBox checkBox33SK;
+//    private JCheckBox checkBox34SL;
+//    private JCheckBox checkBox35SQ_rAL;
+//    private JCheckBox checkBox36SR;
+//    private JCheckBox checkBox37SV;
+//    private JCheckBox checkBox38SW_rTZ;
+//    private JCheckBox checkBox39TA_rIN;
+//    private JCheckBox checkBox40TH;
+//    private JCheckBox checkBox41TR;
+//    private JCheckBox checkBox42UK_rUA;
+//    private JCheckBox checkBox43VI_rVN;
+//    private JCheckBox checkBox44ZH_rCN;
+//    private JCheckBox checkBox45ZH_rHK;
+//    private JCheckBox checkBox46ZH_rTW;
 
 
     /**
@@ -136,6 +141,8 @@ public class ToolFrame extends JFrame implements ActionListener, ItemListener {
      * transform Excel to XML file
      */
     private JPanel mExcel2XMLPanel;
+    private JTextField transformField1;
+    private JTextField transformField2;
     private JTextField transformField3;
     private JTextField transformField4;
     private JTextField transformField5;
@@ -152,7 +159,7 @@ public class ToolFrame extends JFrame implements ActionListener, ItemListener {
 
     private FileChooser mFileChooser;
 
-    private String FILEPATH = "";
+    private static String FILEPATH = "";
 
     /**
      * card layout names
@@ -234,9 +241,6 @@ public class ToolFrame extends JFrame implements ActionListener, ItemListener {
         mChooseExcelBtn.setBounds(150, 40, 230, 40);
         mChooseExcelLab.setBounds(400, 40, 600, 40);
         mChooseExcelBtn.addActionListener(this);
-
-        mChooseExcelPanel.add(mChooseExcelBtn);
-        mChooseExcelPanel.add(mChooseExcelLab);
     }
 
     private void initExcelOperationsPanel() {
@@ -483,213 +487,215 @@ public class ToolFrame extends JFrame implements ActionListener, ItemListener {
 
     private void initChooseCountryPanel() {
         //init choose country panel
-        mChooseCountryPanel = new JPanel(new GridLayout(6, 10));
+        //mChooseCountryPanel = new JPanel(new GridLayout(6, 10));
         mExcel2XMLPanel = new JPanel(null);
-        mExcel2XMLPanel.add(mChooseExcelLab);
-        mExcel2XMLPanel.add(mChooseExcelBtn);
 
-        JLabel countryLab = new JLabel("请选择国家：");
-        countryLab.setFont(new ToolFont());
-        countryLab.setBounds(Constant.PANEL_START_POSITION, 100, 200, Constant.LABEL_HEIGHT);
-        mChooseCountryPanel.setBounds(Constant.PANEL_START_POSITION, 130, Constant.PANEL_WIDTH, 200);
-        mExcel2XMLPanel.add(countryLab);
-        mExcel2XMLPanel.add(mChooseCountryPanel);
+        //JLabel countryLab = new JLabel("请选择国家：");
+        //countryLab.setFont(new ToolFont());
+        //countryLab.setBounds(Constant.PANEL_START_POSITION, 100, 200, Constant.LABEL_HEIGHT);
+        //mChooseCountryPanel.setBounds(Constant.PANEL_START_POSITION, 130, Constant.PANEL_WIDTH, 200);
+        //mExcel2XMLPanel.add(countryLab);
+//        mExcel2XMLPanel.add(mChooseCountryPanel);
 
-        checkBox1AR = new JCheckBox("ar");
-        checkBox2BG_rBG = new JCheckBox("bg-rBG");
-        checkBox3CA = new JCheckBox("ca");
-        checkBox4CS = new JCheckBox("cs");
-        checkBox5CY = new JCheckBox("cy");
-        checkBox6DA = new JCheckBox("da");
-        checkBox7DE = new JCheckBox("de");
-        checkBox8EL_rGR = new JCheckBox("el-rGR");
-        checkBox9ES = new JCheckBox("es");
-        checkBox10ES_rPR = new JCheckBox("es-rPR");
-        checkBox11ET = new JCheckBox("et");
-        checkBox12EU = new JCheckBox("eu");
-        checkBox13FA_rIR = new JCheckBox("fa-rIR");
-        checkBox14FI = new JCheckBox("fi");
-        checkBox15FR = new JCheckBox("fr");
-        checkBox16GD = new JCheckBox("gd");
-        checkBox17GL = new JCheckBox("gl");
-        checkBox18HR = new JCheckBox("hr");
-        checkBox19HU = new JCheckBox("hu");
-        checkBox20IN_rID = new JCheckBox("in-rID");
-        checkBox21IT = new JCheckBox("it");
-        checkBox22IW_rIL = new JCheckBox("iw-rIL");
-        checkBox23KK_rKZ = new JCheckBox("kk-rKZ");
-        checkBox24MN_rMN = new JCheckBox("mn-rMN");
-        checkBox25MS_rMY = new JCheckBox("ms-rMY");
-        checkBox26MY_rMM = new JCheckBox("my-rMM");
-        checkBox27NB = new JCheckBox("nb");
-        checkBox28NL = new JCheckBox("nl");
-        checkBox29PL = new JCheckBox("pl");
-        checkBox30PT = new JCheckBox("pt");
-        checkBox31RO = new JCheckBox("ro");
-        checkBox32RU = new JCheckBox("ru");
-        checkBox33SK = new JCheckBox("sk");
-        checkBox34SL = new JCheckBox("sl");
-        checkBox35SQ_rAL = new JCheckBox("sq-rAL");
-        checkBox36SR = new JCheckBox("sr");
-        checkBox37SV = new JCheckBox("sv");
-        checkBox38SW_rTZ = new JCheckBox("sw-rTZ");
-        checkBox39TA_rIN = new JCheckBox("ta-rIN");
-        checkBox40TH = new JCheckBox("th");
-        checkBox41TR = new JCheckBox("tr");
-        checkBox42UK_rUA = new JCheckBox("uk-rUA");
-        checkBox43VI_rVN = new JCheckBox("vi-rVN");
-        checkBox44ZH_rCN = new JCheckBox("zh-rCN");
-        checkBox45ZH_rHK = new JCheckBox("zh-rHK");
-        checkBox46ZH_rTW = new JCheckBox("zh-rTW");
-
-        checkBox1AR.setFont(new ToolFont());
-        checkBox2BG_rBG.setFont(new ToolFont());
-        checkBox3CA.setFont(new ToolFont());
-        checkBox4CS.setFont(new ToolFont());
-        checkBox5CY.setFont(new ToolFont());
-        checkBox6DA.setFont(new ToolFont());
-        checkBox7DE.setFont(new ToolFont());
-        checkBox8EL_rGR.setFont(new ToolFont());
-        checkBox9ES.setFont(new ToolFont());
-        checkBox10ES_rPR.setFont(new ToolFont());
-        checkBox11ET.setFont(new ToolFont());
-        checkBox12EU.setFont(new ToolFont());
-        checkBox13FA_rIR.setFont(new ToolFont());
-        checkBox14FI.setFont(new ToolFont());
-        checkBox15FR.setFont(new ToolFont());
-        checkBox16GD.setFont(new ToolFont());
-        checkBox17GL.setFont(new ToolFont());
-        checkBox18HR.setFont(new ToolFont());
-        checkBox19HU.setFont(new ToolFont());
-        checkBox20IN_rID.setFont(new ToolFont());
-        checkBox21IT.setFont(new ToolFont());
-        checkBox22IW_rIL.setFont(new ToolFont());
-        checkBox23KK_rKZ.setFont(new ToolFont());
-        checkBox24MN_rMN.setFont(new ToolFont());
-        checkBox25MS_rMY.setFont(new ToolFont());
-        checkBox26MY_rMM.setFont(new ToolFont());
-        checkBox27NB.setFont(new ToolFont());
-        checkBox28NL.setFont(new ToolFont());
-        checkBox29PL.setFont(new ToolFont());
-        checkBox30PT.setFont(new ToolFont());
-        checkBox31RO.setFont(new ToolFont());
-        checkBox32RU.setFont(new ToolFont());
-        checkBox33SK.setFont(new ToolFont());
-        checkBox34SL.setFont(new ToolFont());
-        checkBox35SQ_rAL.setFont(new ToolFont());
-        checkBox36SR.setFont(new ToolFont());
-        checkBox37SV.setFont(new ToolFont());
-        checkBox38SW_rTZ.setFont(new ToolFont());
-        checkBox39TA_rIN.setFont(new ToolFont());
-        checkBox40TH.setFont(new ToolFont());
-        checkBox41TR.setFont(new ToolFont());
-        checkBox42UK_rUA.setFont(new ToolFont());
-        checkBox43VI_rVN.setFont(new ToolFont());
-        checkBox44ZH_rCN.setFont(new ToolFont());
-        checkBox45ZH_rHK.setFont(new ToolFont());
-        checkBox46ZH_rTW.setFont(new ToolFont());
-
-        checkBox1AR.addItemListener(this);
-        checkBox2BG_rBG.addItemListener(this);
-        checkBox3CA.addItemListener(this);
-        checkBox4CS.addItemListener(this);
-        checkBox5CY.addItemListener(this);
-        checkBox6DA.addItemListener(this);
-        checkBox7DE.addItemListener(this);
-        checkBox8EL_rGR.addItemListener(this);
-        checkBox9ES.addItemListener(this);
-        checkBox10ES_rPR.addItemListener(this);
-        checkBox11ET.addItemListener(this);
-        checkBox12EU.addItemListener(this);
-        checkBox13FA_rIR.addItemListener(this);
-        checkBox14FI.addItemListener(this);
-        checkBox15FR.addItemListener(this);
-        checkBox16GD.addItemListener(this);
-        checkBox17GL.addItemListener(this);
-        checkBox18HR.addItemListener(this);
-        checkBox19HU.addItemListener(this);
-        checkBox20IN_rID.addItemListener(this);
-        checkBox21IT.addItemListener(this);
-        checkBox22IW_rIL.addItemListener(this);
-        checkBox23KK_rKZ.addItemListener(this);
-        checkBox24MN_rMN.addItemListener(this);
-        checkBox25MS_rMY.addItemListener(this);
-        checkBox26MY_rMM.addItemListener(this);
-        checkBox27NB.addItemListener(this);
-        checkBox28NL.addItemListener(this);
-        checkBox29PL.addItemListener(this);
-        checkBox30PT.addItemListener(this);
-        checkBox31RO.addItemListener(this);
-        checkBox32RU.addItemListener(this);
-        checkBox33SK.addItemListener(this);
-        checkBox34SL.addItemListener(this);
-        checkBox35SQ_rAL.addItemListener(this);
-        checkBox36SR.addItemListener(this);
-        checkBox37SV.addItemListener(this);
-        checkBox38SW_rTZ.addItemListener(this);
-        checkBox39TA_rIN.addItemListener(this);
-        checkBox40TH.addItemListener(this);
-        checkBox41TR.addItemListener(this);
-        checkBox42UK_rUA.addItemListener(this);
-        checkBox43VI_rVN.addItemListener(this);
-        checkBox44ZH_rCN.addItemListener(this);
-        checkBox45ZH_rHK.addItemListener(this);
-        checkBox46ZH_rTW.addItemListener(this);
-
-        mChooseCountryPanel.add(checkBox1AR);
-        mChooseCountryPanel.add(checkBox2BG_rBG);
-        mChooseCountryPanel.add(checkBox3CA);
-        mChooseCountryPanel.add(checkBox4CS);
-        mChooseCountryPanel.add(checkBox5CY);
-        mChooseCountryPanel.add(checkBox6DA);
-        mChooseCountryPanel.add(checkBox7DE);
-        mChooseCountryPanel.add(checkBox8EL_rGR);
-        mChooseCountryPanel.add(checkBox9ES);
-        mChooseCountryPanel.add(checkBox10ES_rPR);
-        mChooseCountryPanel.add(checkBox11ET);
-        mChooseCountryPanel.add(checkBox12EU);
-        mChooseCountryPanel.add(checkBox13FA_rIR);
-        mChooseCountryPanel.add(checkBox14FI);
-        mChooseCountryPanel.add(checkBox15FR);
-        mChooseCountryPanel.add(checkBox16GD);
-        mChooseCountryPanel.add(checkBox17GL);
-        mChooseCountryPanel.add(checkBox18HR);
-        mChooseCountryPanel.add(checkBox19HU);
-        mChooseCountryPanel.add(checkBox20IN_rID);
-        mChooseCountryPanel.add(checkBox21IT);
-        mChooseCountryPanel.add(checkBox22IW_rIL);
-        mChooseCountryPanel.add(checkBox23KK_rKZ);
-        mChooseCountryPanel.add(checkBox24MN_rMN);
-        mChooseCountryPanel.add(checkBox25MS_rMY);
-        mChooseCountryPanel.add(checkBox26MY_rMM);
-        mChooseCountryPanel.add(checkBox27NB);
-        mChooseCountryPanel.add(checkBox28NL);
-        mChooseCountryPanel.add(checkBox29PL);
-        mChooseCountryPanel.add(checkBox30PT);
-        mChooseCountryPanel.add(checkBox31RO);
-        mChooseCountryPanel.add(checkBox32RU);
-        mChooseCountryPanel.add(checkBox33SK);
-        mChooseCountryPanel.add(checkBox34SL);
-        mChooseCountryPanel.add(checkBox35SQ_rAL);
-        mChooseCountryPanel.add(checkBox36SR);
-        mChooseCountryPanel.add(checkBox37SV);
-        mChooseCountryPanel.add(checkBox38SW_rTZ);
-        mChooseCountryPanel.add(checkBox39TA_rIN);
-        mChooseCountryPanel.add(checkBox40TH);
-        mChooseCountryPanel.add(checkBox41TR);
-        mChooseCountryPanel.add(checkBox42UK_rUA);
-        mChooseCountryPanel.add(checkBox43VI_rVN);
-        mChooseCountryPanel.add(checkBox44ZH_rCN);
-        mChooseCountryPanel.add(checkBox45ZH_rHK);
-        mChooseCountryPanel.add(checkBox46ZH_rTW);
+//        checkBox1AR = new JCheckBox("ar");
+//        checkBox2BG_rBG = new JCheckBox("bg-rBG");
+//        checkBox3CA = new JCheckBox("ca");
+//        checkBox4CS = new JCheckBox("cs");
+//        checkBox5CY = new JCheckBox("cy");
+//        checkBox6DA = new JCheckBox("da");
+//        checkBox7DE = new JCheckBox("de");
+//        checkBox8EL_rGR = new JCheckBox("el-rGR");
+//        checkBox9ES = new JCheckBox("es");
+//        checkBox10ES_rPR = new JCheckBox("es-rPR");
+//        checkBox11ET = new JCheckBox("et");
+//        checkBox12EU = new JCheckBox("eu");
+//        checkBox13FA_rIR = new JCheckBox("fa-rIR");
+//        checkBox14FI = new JCheckBox("fi");
+//        checkBox15FR = new JCheckBox("fr");
+//        checkBox16GD = new JCheckBox("gd");
+//        checkBox17GL = new JCheckBox("gl");
+//        checkBox18HR = new JCheckBox("hr");
+//        checkBox19HU = new JCheckBox("hu");
+//        checkBox20IN_rID = new JCheckBox("in-rID");
+//        checkBox21IT = new JCheckBox("it");
+//        checkBox22IW_rIL = new JCheckBox("iw-rIL");
+//        checkBox23KK_rKZ = new JCheckBox("kk-rKZ");
+//        checkBox24MN_rMN = new JCheckBox("mn-rMN");
+//        checkBox25MS_rMY = new JCheckBox("ms-rMY");
+//        checkBox26MY_rMM = new JCheckBox("my-rMM");
+//        checkBox27NB = new JCheckBox("nb");
+//        checkBox28NL = new JCheckBox("nl");
+//        checkBox29PL = new JCheckBox("pl");
+//        checkBox30PT = new JCheckBox("pt");
+//        checkBox31RO = new JCheckBox("ro");
+//        checkBox32RU = new JCheckBox("ru");
+//        checkBox33SK = new JCheckBox("sk");
+//        checkBox34SL = new JCheckBox("sl");
+//        checkBox35SQ_rAL = new JCheckBox("sq-rAL");
+//        checkBox36SR = new JCheckBox("sr");
+//        checkBox37SV = new JCheckBox("sv");
+//        checkBox38SW_rTZ = new JCheckBox("sw-rTZ");
+//        checkBox39TA_rIN = new JCheckBox("ta-rIN");
+//        checkBox40TH = new JCheckBox("th");
+//        checkBox41TR = new JCheckBox("tr");
+//        checkBox42UK_rUA = new JCheckBox("uk-rUA");
+//        checkBox43VI_rVN = new JCheckBox("vi-rVN");
+//        checkBox44ZH_rCN = new JCheckBox("zh-rCN");
+//        checkBox45ZH_rHK = new JCheckBox("zh-rHK");
+//        checkBox46ZH_rTW = new JCheckBox("zh-rTW");
+//
+//        checkBox1AR.setFont(new ToolFont());
+//        checkBox2BG_rBG.setFont(new ToolFont());
+//        checkBox3CA.setFont(new ToolFont());
+//        checkBox4CS.setFont(new ToolFont());
+//        checkBox5CY.setFont(new ToolFont());
+//        checkBox6DA.setFont(new ToolFont());
+//        checkBox7DE.setFont(new ToolFont());
+//        checkBox8EL_rGR.setFont(new ToolFont());
+//        checkBox9ES.setFont(new ToolFont());
+//        checkBox10ES_rPR.setFont(new ToolFont());
+//        checkBox11ET.setFont(new ToolFont());
+//        checkBox12EU.setFont(new ToolFont());
+//        checkBox13FA_rIR.setFont(new ToolFont());
+//        checkBox14FI.setFont(new ToolFont());
+//        checkBox15FR.setFont(new ToolFont());
+//        checkBox16GD.setFont(new ToolFont());
+//        checkBox17GL.setFont(new ToolFont());
+//        checkBox18HR.setFont(new ToolFont());
+//        checkBox19HU.setFont(new ToolFont());
+//        checkBox20IN_rID.setFont(new ToolFont());
+//        checkBox21IT.setFont(new ToolFont());
+//        checkBox22IW_rIL.setFont(new ToolFont());
+//        checkBox23KK_rKZ.setFont(new ToolFont());
+//        checkBox24MN_rMN.setFont(new ToolFont());
+//        checkBox25MS_rMY.setFont(new ToolFont());
+//        checkBox26MY_rMM.setFont(new ToolFont());
+//        checkBox27NB.setFont(new ToolFont());
+//        checkBox28NL.setFont(new ToolFont());
+//        checkBox29PL.setFont(new ToolFont());
+//        checkBox30PT.setFont(new ToolFont());
+//        checkBox31RO.setFont(new ToolFont());
+//        checkBox32RU.setFont(new ToolFont());
+//        checkBox33SK.setFont(new ToolFont());
+//        checkBox34SL.setFont(new ToolFont());
+//        checkBox35SQ_rAL.setFont(new ToolFont());
+//        checkBox36SR.setFont(new ToolFont());
+//        checkBox37SV.setFont(new ToolFont());
+//        checkBox38SW_rTZ.setFont(new ToolFont());
+//        checkBox39TA_rIN.setFont(new ToolFont());
+//        checkBox40TH.setFont(new ToolFont());
+//        checkBox41TR.setFont(new ToolFont());
+//        checkBox42UK_rUA.setFont(new ToolFont());
+//        checkBox43VI_rVN.setFont(new ToolFont());
+//        checkBox44ZH_rCN.setFont(new ToolFont());
+//        checkBox45ZH_rHK.setFont(new ToolFont());
+//        checkBox46ZH_rTW.setFont(new ToolFont());
+//
+//        checkBox1AR.addItemListener(this);
+//        checkBox2BG_rBG.addItemListener(this);
+//        checkBox3CA.addItemListener(this);
+//        checkBox4CS.addItemListener(this);
+//        checkBox5CY.addItemListener(this);
+//        checkBox6DA.addItemListener(this);
+//        checkBox7DE.addItemListener(this);
+//        checkBox8EL_rGR.addItemListener(this);
+//        checkBox9ES.addItemListener(this);
+//        checkBox10ES_rPR.addItemListener(this);
+//        checkBox11ET.addItemListener(this);
+//        checkBox12EU.addItemListener(this);
+//        checkBox13FA_rIR.addItemListener(this);
+//        checkBox14FI.addItemListener(this);
+//        checkBox15FR.addItemListener(this);
+//        checkBox16GD.addItemListener(this);
+//        checkBox17GL.addItemListener(this);
+//        checkBox18HR.addItemListener(this);
+//        checkBox19HU.addItemListener(this);
+//        checkBox20IN_rID.addItemListener(this);
+//        checkBox21IT.addItemListener(this);
+//        checkBox22IW_rIL.addItemListener(this);
+//        checkBox23KK_rKZ.addItemListener(this);
+//        checkBox24MN_rMN.addItemListener(this);
+//        checkBox25MS_rMY.addItemListener(this);
+//        checkBox26MY_rMM.addItemListener(this);
+//        checkBox27NB.addItemListener(this);
+//        checkBox28NL.addItemListener(this);
+//        checkBox29PL.addItemListener(this);
+//        checkBox30PT.addItemListener(this);
+//        checkBox31RO.addItemListener(this);
+//        checkBox32RU.addItemListener(this);
+//        checkBox33SK.addItemListener(this);
+//        checkBox34SL.addItemListener(this);
+//        checkBox35SQ_rAL.addItemListener(this);
+//        checkBox36SR.addItemListener(this);
+//        checkBox37SV.addItemListener(this);
+//        checkBox38SW_rTZ.addItemListener(this);
+//        checkBox39TA_rIN.addItemListener(this);
+//        checkBox40TH.addItemListener(this);
+//        checkBox41TR.addItemListener(this);
+//        checkBox42UK_rUA.addItemListener(this);
+//        checkBox43VI_rVN.addItemListener(this);
+//        checkBox44ZH_rCN.addItemListener(this);
+//        checkBox45ZH_rHK.addItemListener(this);
+//        checkBox46ZH_rTW.addItemListener(this);
+//
+//        mChooseCountryPanel.add(checkBox1AR);
+//        mChooseCountryPanel.add(checkBox2BG_rBG);
+//        mChooseCountryPanel.add(checkBox3CA);
+//        mChooseCountryPanel.add(checkBox4CS);
+//        mChooseCountryPanel.add(checkBox5CY);
+//        mChooseCountryPanel.add(checkBox6DA);
+//        mChooseCountryPanel.add(checkBox7DE);
+//        mChooseCountryPanel.add(checkBox8EL_rGR);
+//        mChooseCountryPanel.add(checkBox9ES);
+//        mChooseCountryPanel.add(checkBox10ES_rPR);
+//        mChooseCountryPanel.add(checkBox11ET);
+//        mChooseCountryPanel.add(checkBox12EU);
+//        mChooseCountryPanel.add(checkBox13FA_rIR);
+//        mChooseCountryPanel.add(checkBox14FI);
+//        mChooseCountryPanel.add(checkBox15FR);
+//        mChooseCountryPanel.add(checkBox16GD);
+//        mChooseCountryPanel.add(checkBox17GL);
+//        mChooseCountryPanel.add(checkBox18HR);
+//        mChooseCountryPanel.add(checkBox19HU);
+//        mChooseCountryPanel.add(checkBox20IN_rID);
+//        mChooseCountryPanel.add(checkBox21IT);
+//        mChooseCountryPanel.add(checkBox22IW_rIL);
+//        mChooseCountryPanel.add(checkBox23KK_rKZ);
+//        mChooseCountryPanel.add(checkBox24MN_rMN);
+//        mChooseCountryPanel.add(checkBox25MS_rMY);
+//        mChooseCountryPanel.add(checkBox26MY_rMM);
+//        mChooseCountryPanel.add(checkBox27NB);
+//        mChooseCountryPanel.add(checkBox28NL);
+//        mChooseCountryPanel.add(checkBox29PL);
+//        mChooseCountryPanel.add(checkBox30PT);
+//        mChooseCountryPanel.add(checkBox31RO);
+//        mChooseCountryPanel.add(checkBox32RU);
+//        mChooseCountryPanel.add(checkBox33SK);
+//        mChooseCountryPanel.add(checkBox34SL);
+//        mChooseCountryPanel.add(checkBox35SQ_rAL);
+//        mChooseCountryPanel.add(checkBox36SR);
+//        mChooseCountryPanel.add(checkBox37SV);
+//        mChooseCountryPanel.add(checkBox38SW_rTZ);
+//        mChooseCountryPanel.add(checkBox39TA_rIN);
+//        mChooseCountryPanel.add(checkBox40TH);
+//        mChooseCountryPanel.add(checkBox41TR);
+//        mChooseCountryPanel.add(checkBox42UK_rUA);
+//        mChooseCountryPanel.add(checkBox43VI_rVN);
+//        mChooseCountryPanel.add(checkBox44ZH_rCN);
+//        mChooseCountryPanel.add(checkBox45ZH_rHK);
+//        mChooseCountryPanel.add(checkBox46ZH_rTW);
     }
 
     private void initTransformPanel() {
         //init transform Excel to XML file panel
         JLabel label = new JLabel("<html>选择要转换的XML文件类型<br>&nbsp;&nbsp;&nbsp;（不支持array类型）：</html>");
-        label.setBounds(Constant.PANEL_START_POSITION, 370, 250, 50);
+        label.setBounds(Constant.PANEL_START_POSITION, 130, 250, 50);
         label.setFont(new ToolFont());
+        JLabel defaultLab = new JLabel("生成XML文件默认写入路径：E:\\origin_keys");
+        defaultLab.setBounds(400, 70, 600, 40);
+        defaultLab.setFont(new ToolFont());
         mExcel2XMLPanel.add(label);
+        mExcel2XMLPanel.add(defaultLab);
 
         ButtonGroup fileTypeGroup = new ButtonGroup();
         JRadioButton stringsBtn = new JRadioButton(Constant.FILE_STRINGS, true);
@@ -723,19 +729,19 @@ public class ToolFrame extends JFrame implements ActionListener, ItemListener {
         fileTypeGroup.add(thr_menu_stringsBtn);
         fileTypeGroup.add(timeshift_stringsBtn);
 
-        stringsBtn.setBounds(Constant.PANEL_START_POSITION + 240, 340,
+        stringsBtn.setBounds(Constant.PANEL_START_POSITION + 240, 100,
                 120, Constant.RADIO_BUTTON_HEIGHT);
-        menu_stringsBtn.setBounds(Constant.PANEL_START_POSITION + 400, 340,
+        menu_stringsBtn.setBounds(Constant.PANEL_START_POSITION + 400, 100,
                 190, Constant.RADIO_BUTTON_HEIGHT);
-        nav_stringsBtn.setBounds(Constant.PANEL_START_POSITION + 620, 340,
+        nav_stringsBtn.setBounds(Constant.PANEL_START_POSITION + 620, 100,
                 190, Constant.RADIO_BUTTON_HEIGHT);
-        timeshift_stringsBtn.setBounds(Constant.PANEL_START_POSITION + 240, 375,
+        timeshift_stringsBtn.setBounds(Constant.PANEL_START_POSITION + 240, 135,
                 220, Constant.RADIO_BUTTON_HEIGHT);
-        thr_menu_stringsBtn.setBounds(Constant.PANEL_START_POSITION + 480, 375,
+        thr_menu_stringsBtn.setBounds(Constant.PANEL_START_POSITION + 480, 135,
                 250, Constant.RADIO_BUTTON_HEIGHT);
-        mmp_stringsBtn.setBounds(Constant.PANEL_START_POSITION + 240, 410,
+        mmp_stringsBtn.setBounds(Constant.PANEL_START_POSITION + 240, 170,
                 190, Constant.RADIO_BUTTON_HEIGHT);
-        cec_stringsBtn.setBounds(Constant.PANEL_START_POSITION + 480, 410,
+        cec_stringsBtn.setBounds(Constant.PANEL_START_POSITION + 480, 170,
                 190, Constant.RADIO_BUTTON_HEIGHT);
         mExcel2XMLPanel.add(stringsBtn);
         mExcel2XMLPanel.add(menu_stringsBtn);
@@ -747,28 +753,50 @@ public class ToolFrame extends JFrame implements ActionListener, ItemListener {
 
         JLabel jLabel = new JLabel("填写操作参数：");
         jLabel.setFont(new ToolFont());
-        jLabel.setBounds(Constant.PANEL_START_POSITION, 460, 130, 20);
+        jLabel.setBounds(Constant.PANEL_START_POSITION, 230, 130, 20);
+        JLabel transformLab1 = new JLabel("<html>开始表序号<br>(1、2、3...)：</html>");
+        JLabel transformLab2 = new JLabel("<html>结束表序号<br>(1、2、3...)：</html>");
         JLabel transformLab3 = new JLabel("<html>key值列数序号<br>(1、2、3...)：</html>");
         JLabel transformLab4 = new JLabel("<html>value值列数序号<br>(1、2、3...)：</html>");
         JLabel transformLab5 = new JLabel("<html>开始写入行序号<br>(1、2、3...)：</html>");
         JLabel transformLab6 = new JLabel("<html>结束写入行序号<br>(1、2、3...)：</html>");
+        transformLab1.setFont(new ToolFont());
+        transformLab2.setFont(new ToolFont());
         transformLab3.setFont(new ToolFont());
         transformLab4.setFont(new ToolFont());
         transformLab5.setFont(new ToolFont());
         transformLab6.setFont(new ToolFont());
+        transformField1 = new JTextField(5);
+        transformField2 = new JTextField(5);
         transformField3 = new JTextField(5);
         transformField4 = new JTextField(5);
         transformField5 = new JTextField(5);
         transformField6 = new JTextField(5);
-        transformLab3.setBounds(Constant.PANEL_START_POSITION + 150, 460, 260, 40);
-        transformField3.setBounds(Constant.PANEL_START_POSITION + 280, 470, 100, 30);
-        transformLab4.setBounds(Constant.PANEL_START_POSITION + 420, 460, 260, 40);
-        transformField4.setBounds(Constant.PANEL_START_POSITION + 560, 470, 100, 30);
-        transformLab5.setBounds(Constant.PANEL_START_POSITION + 150, 520, 260, 40);
-        transformField5.setBounds(Constant.PANEL_START_POSITION + 280, 530, 100, 30);
-        transformLab6.setBounds(Constant.PANEL_START_POSITION + 420, 520, 260, 40);
-        transformField6.setBounds(Constant.PANEL_START_POSITION + 560, 530, 100, 30);
+        transformField1.setFont(new ToolFont());
+        transformField2.setFont(new ToolFont());
+        transformField3.setFont(new ToolFont());
+        transformField4.setFont(new ToolFont());
+        transformField5.setFont(new ToolFont());
+        transformField6.setFont(new ToolFont());
+
+        transformLab1.setBounds(Constant.PANEL_START_POSITION + 150, 230, 260, 40);
+        transformField1.setBounds(Constant.PANEL_START_POSITION + 280, 240, 100, 30);
+        transformLab2.setBounds(Constant.PANEL_START_POSITION + 420, 230, 260, 40);
+        transformField2.setBounds(Constant.PANEL_START_POSITION + 560, 240, 100, 30);
+        transformLab3.setBounds(Constant.PANEL_START_POSITION + 150, 290, 260, 40);
+        transformField3.setBounds(Constant.PANEL_START_POSITION + 280, 300, 100, 30);
+        transformLab4.setBounds(Constant.PANEL_START_POSITION + 420, 290, 260, 40);
+        transformField4.setBounds(Constant.PANEL_START_POSITION + 560, 300, 100, 30);
+        transformLab5.setBounds(Constant.PANEL_START_POSITION + 150, 350, 260, 40);
+        transformField5.setBounds(Constant.PANEL_START_POSITION + 280, 360, 100, 30);
+        transformLab6.setBounds(Constant.PANEL_START_POSITION + 420, 350, 260, 40);
+        transformField6.setBounds(Constant.PANEL_START_POSITION + 560, 360, 100, 30);
+
         mExcel2XMLPanel.add(jLabel);
+        mExcel2XMLPanel.add(transformLab1);
+        mExcel2XMLPanel.add(transformField1);
+        mExcel2XMLPanel.add(transformLab2);
+        mExcel2XMLPanel.add(transformField2);
         mExcel2XMLPanel.add(transformLab3);
         mExcel2XMLPanel.add(transformField3);
         mExcel2XMLPanel.add(transformLab4);
@@ -781,7 +809,7 @@ public class ToolFrame extends JFrame implements ActionListener, ItemListener {
         JButton transConfirmBtn = new JButton("开始转换");
         transConfirmBtn.setFont(new ToolFont());
         transConfirmBtn.addActionListener(this);
-        transConfirmBtn.setBounds(Constant.PANEL_START_POSITION + 690, 490, 120, Constant.BUTTON_HEIGHT);
+        transConfirmBtn.setBounds(Constant.PANEL_START_POSITION + 690, 355, 120, Constant.BUTTON_HEIGHT);
         mExcel2XMLPanel.add(transConfirmBtn);
     }
 
@@ -800,12 +828,16 @@ public class ToolFrame extends JFrame implements ActionListener, ItemListener {
 
     private void setOperationsLogPalPosition() {
         mLogScrollPane.setBounds(150, 370, 850, 450);
+        mChooseExcelPanel.add(mChooseExcelBtn);
+        mChooseExcelPanel.add(mChooseExcelLab);
         mChooseExcelPanel.add(clearLogBtn);
         mChooseExcelPanel.add(mLogScrollPane);
     }
 
     private void setTransformLogPalPosition() {
-        mLogScrollPane.setBounds(150, 570, 850, 250);
+        mLogScrollPane.setBounds(150, 410, 850, 410);
+        mExcel2XMLPanel.add(mChooseExcelLab);
+        mExcel2XMLPanel.add(mChooseExcelBtn);
         mExcel2XMLPanel.add(clearLogBtn);
         mExcel2XMLPanel.add(mLogScrollPane);
     }
@@ -922,51 +954,61 @@ public class ToolFrame extends JFrame implements ActionListener, ItemListener {
             Main.copyRowA2RowB(FILEPATH, readSheetIndex, beginSheetIndex, endSheetIndex, readCol, writeCol);
         } else if ("开始转换".equals(btn)) {
 
-            if (count == 0) {
-                showLog("警告！！！请选择国家");
-                return;
-            }
+//            if (count == 0) {
+//                showLog("警告！！！请选择国家");
+//                return;
+//            }
 
             //create file name
-            showLog("The number of selected countries is " + count);
-            showLog("selected file type is " + mFileType);
-            String[] filenames = null;
-            String[] countries;
-            countries = selectedCountries(count);
-            showLog("choose countries = " + Arrays.toString(countries));
-            switch (mFileType) {
-                case Constant.FILE_STRINGS:
-                    filenames = Main.createFileNames(Constant.FILE_STRINGS, countries, count);
-                    break;
-                case Constant.FILE_MENU_STRINGS:
-                    filenames = Main.createFileNames(Constant.FILE_MENU_STRINGS, countries, count);
-                    break;
-                case Constant.FILE_NAV_STRINGS:
-                    filenames = Main.createFileNames(Constant.FILE_NAV_STRINGS, countries, count);
-                    break;
-                case Constant.FILE_TIMESHIFT_STRINGS:
-                    filenames = Main.createFileNames(Constant.FILE_TIMESHIFT_STRINGS, countries, count);
-                    break;
-                case Constant.FILE_MMP_STRINGS:
-                    filenames = Main.createFileNames(Constant.FILE_MMP_STRINGS, countries, count);
-                    break;
-                case Constant.FILE_CEC_STRINGS:
-                    filenames = Main.createFileNames(Constant.FILE_CEC_STRINGS, countries, count);
-                    break;
-                case Constant.FILE_THR_MENU_STRINGS:
-                    filenames = Main.createFileNames(Constant.FILE_THR_MENU_STRINGS, countries, count);
-                    break;
-            }
-
-            if (filenames == null) {
-                showLog("error!!! filenames is null");
-            }
-            showLog("files name :  \n" + Arrays.toString(filenames));
+//            showLog("The number of selected countries is " + count);
+//            showLog("selected file type is " + mFileType);
 
             if (FILEPATH.equals("")) {
                 showLog("警告！！！还未选择文件。");
                 return;
             }
+
+            int beginSheetIndex = Integer.parseInt(transformField1.getText().toString());
+            int endSheetIndex = Integer.parseInt(transformField2.getText().toString());
+
+            String[] filenames = null;
+            String[] countries;
+            countries = getCountries(beginSheetIndex, endSheetIndex);
+            if (countries == null || countries.length == 0) {
+                showLog("error!!! Countries name is wrong.");
+            }
+            //countries = selectedCountries(count);
+            showLog("choose countries = " + Arrays.toString(countries));
+            showLog("file type = " + mFileType);
+            switch (mFileType) {
+                case Constant.FILE_STRINGS:
+                    filenames = Main.createFileNames(Constant.FILE_STRINGS, countries);
+                    break;
+                case Constant.FILE_MENU_STRINGS:
+                    filenames = Main.createFileNames(Constant.FILE_MENU_STRINGS, countries);
+                    break;
+                case Constant.FILE_NAV_STRINGS:
+                    filenames = Main.createFileNames(Constant.FILE_NAV_STRINGS, countries);
+                    break;
+                case Constant.FILE_TIMESHIFT_STRINGS:
+                    filenames = Main.createFileNames(Constant.FILE_TIMESHIFT_STRINGS, countries);
+                    break;
+                case Constant.FILE_MMP_STRINGS:
+                    filenames = Main.createFileNames(Constant.FILE_MMP_STRINGS, countries);
+                    break;
+                case Constant.FILE_CEC_STRINGS:
+                    filenames = Main.createFileNames(Constant.FILE_CEC_STRINGS, countries);
+                    break;
+                case Constant.FILE_THR_MENU_STRINGS:
+                    filenames = Main.createFileNames(Constant.FILE_THR_MENU_STRINGS, countries);
+                    break;
+            }
+
+            if (filenames == null || filenames.length == 0) {
+                showLog("error!!! filenames is null");
+                return;
+            }
+            showLog("files name :  \n" + Arrays.toString(filenames));
 
             int keyCol = 0;
             int valueCol = 0;
@@ -981,167 +1023,219 @@ public class ToolFrame extends JFrame implements ActionListener, ItemListener {
                 showLog("警告！！！参数填写有误，请检查后重新输入。");
                 return;
             }
-            Main.transformEXCEL2XML(FILEPATH, Main.XMLPATH, filenames, countries, keyCol, valueCol, beginRow, endRow);
+            Main.transformEXCEL2XML(FILEPATH, Main.XMLPATH, filenames, beginSheetIndex
+                    , endSheetIndex, keyCol, valueCol, beginRow, endRow);
         } else if ("clear log".equals(btn)) {
             mLogArea.setText("");
         }
     }
 
-    private String[] selectedCountries(int count) {
-        if (count == 0) {
-            return null;
+    private static String[] getCountries(int beginSheetIndex, int endSheetIndex) {
+        beginSheetIndex -= 1;
+        endSheetIndex -= 1;
+        String[] result = null;
+        try {
+            File file = new File(FILEPATH);
+            InputStream in = new FileInputStream(file);
+            WorkbookSettings settings = new WorkbookSettings();
+            //保证读取（read）excel的编码格式和写入（write）的编码格式统一，避免乱码
+            settings.setEncoding("ISO-8859-1");
+            Workbook workbook = Workbook.getWorkbook(in, settings);
+
+            Sheet[] sheets = workbook.getSheets();
+
+            if (beginSheetIndex < 0) {
+                System.out.println("error beginSheetIndex参数有误");
+                ToolFrame.showLog("error beginSheetIndex参数有误，请重新输入！");
+                return null;
+            }
+            if (endSheetIndex >= workbook.getNumberOfSheets()) {
+                System.out.println("error endSheetIndex参数有误");
+                ToolFrame.showLog("error endSheetIndex参数有误，请重新输入！");
+                return null;
+            }
+            if (beginSheetIndex > endSheetIndex) {
+                System.out.println("error sheetIndex参数有误");
+                ToolFrame.showLog("error sheetIndex参数有误，请重新输入！");
+                return null;
+            }
+
+            int length = endSheetIndex - beginSheetIndex + 1;
+            result = new String[length];
+            int index = 0;
+            for (int i = beginSheetIndex; i <= endSheetIndex; i++) {
+                result[index] = sheets[i].getName().toString();
+                index++;
+            }
+            System.out.println(Arrays.toString(result));
+
+            return result;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (BiffException e) {
+            e.printStackTrace();
         }
 
-        String[] result = new String[count];
-        int index = 0;
-        if (checkBox1AR.isSelected()) {
-            result[index++] = checkBox1AR.getText().toString();
-        }
-        if (checkBox2BG_rBG.isSelected()) {
-            result[index++] = checkBox2BG_rBG.getText().toString();
-        }
-        if (checkBox3CA.isSelected()) {
-            result[index++] = checkBox3CA.getText().toString();
-        }
-        if (checkBox4CS.isSelected()) {
-            result[index++] = checkBox4CS.getText().toString();
-        }
-        if (checkBox5CY.isSelected()) {
-            result[index++] = checkBox5CY.getText().toString();
-        }
-        if (checkBox6DA.isSelected()) {
-            result[index++] = checkBox6DA.getText().toString();
-        }
-        if (checkBox7DE.isSelected()) {
-            result[index++] = checkBox7DE.getText().toString();
-        }
-        if (checkBox8EL_rGR.isSelected()) {
-            result[index++] = checkBox8EL_rGR.getText().toString();
-        }
-        if (checkBox9ES.isSelected()) {
-            result[index++] = checkBox9ES.getText().toString();
-        }
-        if (checkBox10ES_rPR.isSelected()) {
-            result[index++] = checkBox10ES_rPR.getText().toString();
-        }
-
-
-        if (checkBox11ET.isSelected()) {
-            result[index++] = checkBox11ET.getText().toString();
-        }
-        if (checkBox12EU.isSelected()) {
-            result[index++] = checkBox12EU.getText().toString();
-        }
-        if (checkBox13FA_rIR.isSelected()) {
-            result[index++] = checkBox13FA_rIR.getText().toString();
-        }
-        if (checkBox14FI.isSelected()) {
-            result[index++] = checkBox14FI.getText().toString();
-        }
-        if (checkBox15FR.isSelected()) {
-            result[index++] = checkBox15FR.getText().toString();
-        }
-        if (checkBox16GD.isSelected()) {
-            result[index++] = checkBox16GD.getText().toString();
-        }
-        if (checkBox17GL.isSelected()) {
-            result[index++] = checkBox17GL.getText().toString();
-        }
-        if (checkBox18HR.isSelected()) {
-            result[index++] = checkBox18HR.getText().toString();
-        }
-        if (checkBox19HU.isSelected()) {
-            result[index++] = checkBox19HU.getText().toString();
-        }
-        if (checkBox20IN_rID.isSelected()) {
-            result[index++] = checkBox20IN_rID.getText().toString();
-        }
-
-
-        if (checkBox21IT.isSelected()) {
-            result[index++] = checkBox21IT.getText().toString();
-        }
-        if (checkBox22IW_rIL.isSelected()) {
-            result[index++] = checkBox22IW_rIL.getText().toString();
-        }
-        if (checkBox23KK_rKZ.isSelected()) {
-            result[index++] = checkBox23KK_rKZ.getText().toString();
-        }
-        if (checkBox24MN_rMN.isSelected()) {
-            result[index++] = checkBox24MN_rMN.getText().toString();
-        }
-        if (checkBox25MS_rMY.isSelected()) {
-            result[index++] = checkBox25MS_rMY.getText().toString();
-        }
-        if (checkBox26MY_rMM.isSelected()) {
-            result[index++] = checkBox26MY_rMM.getText().toString();
-        }
-        if (checkBox27NB.isSelected()) {
-            result[index++] = checkBox27NB.getText().toString();
-        }
-        if (checkBox28NL.isSelected()) {
-            result[index++] = checkBox28NL.getText().toString();
-        }
-        if (checkBox29PL.isSelected()) {
-            result[index++] = checkBox29PL.getText().toString();
-        }
-        if (checkBox30PT.isSelected()) {
-            result[index++] = checkBox30PT.getText().toString();
-        }
-
-
-        if (checkBox31RO.isSelected()) {
-            result[index++] = checkBox31RO.getText().toString();
-        }
-        if (checkBox32RU.isSelected()) {
-            result[index++] = checkBox32RU.getText().toString();
-        }
-        if (checkBox33SK.isSelected()) {
-            result[index++] = checkBox33SK.getText().toString();
-        }
-        if (checkBox34SL.isSelected()) {
-            result[index++] = checkBox34SL.getText().toString();
-        }
-        if (checkBox35SQ_rAL.isSelected()) {
-            result[index++] = checkBox35SQ_rAL.getText().toString();
-        }
-        if (checkBox36SR.isSelected()) {
-            result[index++] = checkBox36SR.getText().toString();
-        }
-        if (checkBox37SV.isSelected()) {
-            result[index++] = checkBox37SV.getText().toString();
-        }
-        if (checkBox38SW_rTZ.isSelected()) {
-            result[index++] = checkBox38SW_rTZ.getText().toString();
-        }
-        if (checkBox39TA_rIN.isSelected()) {
-            result[index++] = checkBox39TA_rIN.getText().toString();
-        }
-        if (checkBox40TH.isSelected()) {
-            result[index++] = checkBox40TH.getText().toString();
-        }
-
-
-        if (checkBox41TR.isSelected()) {
-            result[index++] = checkBox41TR.getText().toString();
-        }
-        if (checkBox42UK_rUA.isSelected()) {
-            result[index++] = checkBox42UK_rUA.getText().toString();
-        }
-        if (checkBox43VI_rVN.isSelected()) {
-            result[index++] = checkBox43VI_rVN.getText().toString();
-        }
-        if (checkBox44ZH_rCN.isSelected()) {
-            result[index++] = checkBox44ZH_rCN.getText().toString();
-        }
-        if (checkBox45ZH_rHK.isSelected()) {
-            result[index++] = checkBox45ZH_rHK.getText().toString();
-        }
-        if (checkBox46ZH_rTW.isSelected()) {
-            result[index++] = checkBox46ZH_rTW.getText().toString();
-        }
         return result;
     }
+
+//    private String[] selectedCountries(int count) {
+//        if (count == 0) {
+//            return null;
+//        }
+//
+//        String[] result = new String[count];
+//        int index = 0;
+//        if (checkBox1AR.isSelected()) {
+//            result[index++] = checkBox1AR.getText().toString();
+//        }
+//        if (checkBox2BG_rBG.isSelected()) {
+//            result[index++] = checkBox2BG_rBG.getText().toString();
+//        }
+//        if (checkBox3CA.isSelected()) {
+//            result[index++] = checkBox3CA.getText().toString();
+//        }
+//        if (checkBox4CS.isSelected()) {
+//            result[index++] = checkBox4CS.getText().toString();
+//        }
+//        if (checkBox5CY.isSelected()) {
+//            result[index++] = checkBox5CY.getText().toString();
+//        }
+//        if (checkBox6DA.isSelected()) {
+//            result[index++] = checkBox6DA.getText().toString();
+//        }
+//        if (checkBox7DE.isSelected()) {
+//            result[index++] = checkBox7DE.getText().toString();
+//        }
+//        if (checkBox8EL_rGR.isSelected()) {
+//            result[index++] = checkBox8EL_rGR.getText().toString();
+//        }
+//        if (checkBox9ES.isSelected()) {
+//            result[index++] = checkBox9ES.getText().toString();
+//        }
+//        if (checkBox10ES_rPR.isSelected()) {
+//            result[index++] = checkBox10ES_rPR.getText().toString();
+//        }
+//
+//
+//        if (checkBox11ET.isSelected()) {
+//            result[index++] = checkBox11ET.getText().toString();
+//        }
+//        if (checkBox12EU.isSelected()) {
+//            result[index++] = checkBox12EU.getText().toString();
+//        }
+//        if (checkBox13FA_rIR.isSelected()) {
+//            result[index++] = checkBox13FA_rIR.getText().toString();
+//        }
+//        if (checkBox14FI.isSelected()) {
+//            result[index++] = checkBox14FI.getText().toString();
+//        }
+//        if (checkBox15FR.isSelected()) {
+//            result[index++] = checkBox15FR.getText().toString();
+//        }
+//        if (checkBox16GD.isSelected()) {
+//            result[index++] = checkBox16GD.getText().toString();
+//        }
+//        if (checkBox17GL.isSelected()) {
+//            result[index++] = checkBox17GL.getText().toString();
+//        }
+//        if (checkBox18HR.isSelected()) {
+//            result[index++] = checkBox18HR.getText().toString();
+//        }
+//        if (checkBox19HU.isSelected()) {
+//            result[index++] = checkBox19HU.getText().toString();
+//        }
+//        if (checkBox20IN_rID.isSelected()) {
+//            result[index++] = checkBox20IN_rID.getText().toString();
+//        }
+//
+//
+//        if (checkBox21IT.isSelected()) {
+//            result[index++] = checkBox21IT.getText().toString();
+//        }
+//        if (checkBox22IW_rIL.isSelected()) {
+//            result[index++] = checkBox22IW_rIL.getText().toString();
+//        }
+//        if (checkBox23KK_rKZ.isSelected()) {
+//            result[index++] = checkBox23KK_rKZ.getText().toString();
+//        }
+//        if (checkBox24MN_rMN.isSelected()) {
+//            result[index++] = checkBox24MN_rMN.getText().toString();
+//        }
+//        if (checkBox25MS_rMY.isSelected()) {
+//            result[index++] = checkBox25MS_rMY.getText().toString();
+//        }
+//        if (checkBox26MY_rMM.isSelected()) {
+//            result[index++] = checkBox26MY_rMM.getText().toString();
+//        }
+//        if (checkBox27NB.isSelected()) {
+//            result[index++] = checkBox27NB.getText().toString();
+//        }
+//        if (checkBox28NL.isSelected()) {
+//            result[index++] = checkBox28NL.getText().toString();
+//        }
+//        if (checkBox29PL.isSelected()) {
+//            result[index++] = checkBox29PL.getText().toString();
+//        }
+//        if (checkBox30PT.isSelected()) {
+//            result[index++] = checkBox30PT.getText().toString();
+//        }
+//
+//
+//        if (checkBox31RO.isSelected()) {
+//            result[index++] = checkBox31RO.getText().toString();
+//        }
+//        if (checkBox32RU.isSelected()) {
+//            result[index++] = checkBox32RU.getText().toString();
+//        }
+//        if (checkBox33SK.isSelected()) {
+//            result[index++] = checkBox33SK.getText().toString();
+//        }
+//        if (checkBox34SL.isSelected()) {
+//            result[index++] = checkBox34SL.getText().toString();
+//        }
+//        if (checkBox35SQ_rAL.isSelected()) {
+//            result[index++] = checkBox35SQ_rAL.getText().toString();
+//        }
+//        if (checkBox36SR.isSelected()) {
+//            result[index++] = checkBox36SR.getText().toString();
+//        }
+//        if (checkBox37SV.isSelected()) {
+//            result[index++] = checkBox37SV.getText().toString();
+//        }
+//        if (checkBox38SW_rTZ.isSelected()) {
+//            result[index++] = checkBox38SW_rTZ.getText().toString();
+//        }
+//        if (checkBox39TA_rIN.isSelected()) {
+//            result[index++] = checkBox39TA_rIN.getText().toString();
+//        }
+//        if (checkBox40TH.isSelected()) {
+//            result[index++] = checkBox40TH.getText().toString();
+//        }
+//
+//
+//        if (checkBox41TR.isSelected()) {
+//            result[index++] = checkBox41TR.getText().toString();
+//        }
+//        if (checkBox42UK_rUA.isSelected()) {
+//            result[index++] = checkBox42UK_rUA.getText().toString();
+//        }
+//        if (checkBox43VI_rVN.isSelected()) {
+//            result[index++] = checkBox43VI_rVN.getText().toString();
+//        }
+//        if (checkBox44ZH_rCN.isSelected()) {
+//            result[index++] = checkBox44ZH_rCN.getText().toString();
+//        }
+//        if (checkBox45ZH_rHK.isSelected()) {
+//            result[index++] = checkBox45ZH_rHK.getText().toString();
+//        }
+//        if (checkBox46ZH_rTW.isSelected()) {
+//            result[index++] = checkBox46ZH_rTW.getText().toString();
+//        }
+//        return result;
+//    }
 
     @Override
     public void itemStateChanged(ItemEvent e) {
